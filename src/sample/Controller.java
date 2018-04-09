@@ -14,8 +14,6 @@ import sample.lang.Lang;
 
 public class Controller {
 
-    //MERCI
-    
     @FXML
     private ColorPicker colorPicker;
 
@@ -53,16 +51,6 @@ public class Controller {
     public void onBtnLineClick(ActionEvent actionEvent) {
         lineSelected ^= true;
     }
-    double x,y,x1,y1;
-    public Controller(){
-        x=0;
-        y=0;
-        x1=0;
-        y1=0;
-    }
-
-    int flag =0;
-
     /**End of Button Clicks*/
 
     @FXML
@@ -70,26 +58,26 @@ public class Controller {
         gcBrushTool = canvas.getGraphicsContext2D();
         canvas.setOnMousePressed(e -> {
             if(lineSelected){
-                x=e.getX();
-                y=e.getY();
-                x1=e.getX();
-                y1=e.getY();
+                x = e.getX();
+                y = e.getY();
+                x1 = e.getX();
+                y1 = e.getY();
                 reDraw(gcBrushTool);
             }
         });
         canvas.setOnMouseReleased(e -> {
             if (lineSelected) {
-                x1=e.getX();
-                y1=e.getY();
+                x1 = e.getX();
+                y1 = e.getY();
                 reDraw(gcBrushTool);
             }
         });
         canvas.setOnMouseDragged(e -> {
             if (lineSelected) {
                 pane.getChildren().removeAll(line);
-                x1=e.getX();
-                y1=e.getY();
-                flag=1;
+                x1 = e.getX();
+                y1 = e.getY();
+                flag = 1;
                 reDraw(gcBrushTool);
             }
             double size = 0;
@@ -126,7 +114,7 @@ public class Controller {
         line.setEndX(x1);
         line.setEndY(y1);
         pane.getChildren().add(line);
-       // gcBrushTool.strokeLine(x,y,x1,y1);
+        //gcBrushTool.strokeLine(x,y,x1,y1);
 
         //flag=0;
     }
