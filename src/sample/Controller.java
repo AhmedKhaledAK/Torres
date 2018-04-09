@@ -14,6 +14,8 @@ import sample.lang.Lang;
 
 public class Controller {
 
+    //MERCI
+    
     @FXML
     private ColorPicker colorPicker;
 
