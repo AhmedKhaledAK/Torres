@@ -39,8 +39,8 @@ public class Controller {
     Circle circle = null;
     Circle brushStroke = null;
     Rectangle rectangle = null;
-
-
+    Shape shape = null;
+    ShapeFactory shapeFactory = new ShapeFactory();
     private double x=0,y=0;
 
     @FXML
@@ -51,6 +51,7 @@ public class Controller {
     @FXML
     public void onBtnLineClick(ActionEvent actionEvent) {
         lineSelected ^= true;
+        shape=shapeFactory.createShape("line");
     }
 
     @FXML
@@ -64,15 +65,13 @@ public class Controller {
     }
 
 
-    Shape shape = null;
-    ShapeFactory shapeFactory = new ShapeFactory();
+
 
     public void onMouseDragged(MouseEvent mouseEvent) {
         double x1=mouseEvent.getSceneX();
         double y1=mouseEvent.getSceneY();
 
         if (lineSelected) {
-            shape=shapeFactory.createShape("line");
             shape.removeDeprecated(pane);
             drawLine(x,y,x1,y1,shape);
         }else if(circleSelected) {
