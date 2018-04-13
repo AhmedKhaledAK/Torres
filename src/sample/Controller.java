@@ -2,6 +2,8 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
@@ -11,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import sample.model.Shape;
+import sample.model.ShapeFactory;
 
 public class Controller {
 
@@ -60,13 +64,17 @@ public class Controller {
     }
 
 
+    Shape shape = null;
+    ShapeFactory shapeFactory = new ShapeFactory();
+
     public void onMouseDragged(MouseEvent mouseEvent) {
         double x1=mouseEvent.getSceneX();
         double y1=mouseEvent.getSceneY();
 
         if (lineSelected) {
-            pane.getChildren().remove(line);
-            drawLine(x,y,x1,y1);
+            shape=shapeFactory.createShape("line");
+            shape.removeDeprecated(pane);
+            drawLine(x,y,x1,y1,shape);
         }else if(circleSelected) {
             pane.getChildren().remove(circle);
             drawCircle(x, y, x1, y1);
@@ -89,7 +97,7 @@ public class Controller {
         double y1 = mouseEvent.getSceneY();
 
         if(lineSelected)
-            drawLine(x,y,x1,y1);
+            drawLine(x,y,x1,y1, shape);
         else if(circleSelected)
             drawCircle(x, y, x1, y1);
         else if(brushSelected)
@@ -100,8 +108,11 @@ public class Controller {
             drawBrushStroke(x1, y1);
     }
 
-    public void drawLine(double startX, double startY, double endX, double endY){
-        this.line = new Line();
+    public void drawLine(double startX, double startY, double endX, double endY, Shape shape){
+        ((sample.model.Line)shape).setStartPoint(new Point2D(startX,startY));
+        ((sample.model.Line)shape).setEndPoint(new Point2D(endX,endY));
+        drawShape(shape);
+       /* this.line = new Line();
 
         this.line.setStroke(colorPicker.getValue());
         this.line.setStrokeWidth(sliderSize.getValue());
@@ -109,7 +120,7 @@ public class Controller {
         this.line.setStartY(startY);
         this.line.setEndX(endX);
         this.line.setEndY(endY);
-        pane.getChildren().add(this.line);
+        pane.getChildren().add(this.line);*/
     }
 
     public void drawCircle(double startX, double startY, double endX, double endY) {
@@ -178,6 +189,13 @@ public class Controller {
         this.rectangle.setFill(Color.TRANSPARENT);
 
         pane.getChildren().add(rectangle);
+    }
+
+    private void drawShape(Shape shape) {
+        shape.setFillColor(Color.WHITE);
+        shape.setColor(colorPicker.getValue());
+        shape.setStrokeWidth(sliderSize.getValue());
+        shape.draw(pane);
     }
 
 }

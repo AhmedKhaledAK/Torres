@@ -2,6 +2,7 @@ package sample.model;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.Map;
@@ -15,5 +16,8 @@ public interface Shape {
     Color getColor();
     void setFillColor(Color color);
     Color getFillColor();
-    void draw(GraphicsContext gc);
+    void setStrokeWidth(double width);
+    double getStrokeWidth();
+    void draw(Object pane);
+    void removeDeprecated(Pane pane);
 }
