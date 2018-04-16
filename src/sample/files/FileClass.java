@@ -29,14 +29,15 @@ public class FileClass {
     }
 
     public void save(ArrayList<Shape> shapes){
-        String type=" ";
+        String t;
         if(type.trim().equals("save")){
             fileChooser.setTitle("Save");
             file = fileChooser.showSaveDialog(Main.stage);
             extension = getFileExtension(file.getName());
             System.out.println(extension);
-            type=compareType(extension);
-            if(type.equals("json")) strategy = new JSONFile();
+            t=compareType(extension);
+            System.out.println(t);
+            if(t.equals("json")) strategy = new JSONFile();
             else strategy = new XMLFile();
             strategy.save(shapes);
         }
@@ -44,8 +45,8 @@ public class FileClass {
             fileChooser.setTitle("Open");
             file = fileChooser.showOpenDialog(Main.stage);
             extension = getFileExtension(file.getName());
-            type=compareType(extension);
-            if(type.equals("json")) strategy = new JSONFile();
+            t=compareType(extension);
+            if(t.equals("json")) strategy = new JSONFile();
             else strategy = new XMLFile();
             strategy.load();
         }
