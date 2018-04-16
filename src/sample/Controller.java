@@ -3,7 +3,6 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
@@ -35,10 +34,8 @@ public class Controller {
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
 
-    Line line=null;
     Circle circle = null;
     Circle brushStroke = null;
-    Rectangle rectangle = null;
     Shape shape = null;
     ShapeFactory shapeFactory = new ShapeFactory();
     private double x=0,y=0;
@@ -62,8 +59,8 @@ public class Controller {
     @FXML
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
+        shape = shapeFactory.createShape("rect");
     }
-
 
 
 
@@ -78,8 +75,8 @@ public class Controller {
             pane.getChildren().remove(circle);
             drawCircle(x, y, x1, y1);
         }else if(rectangleSelected) {
-            pane.getChildren().remove(rectangle);
-            drawRectangle(x, y, x1, y1);
+            shape.removeDeprecated(pane);
+            drawRectangle(x, y, x1, y1, shape);
         }else if(brushSelected)
             drawBrushStroke(x1, y1);
         else if(checkBoxEraser.isSelected())
@@ -102,7 +99,7 @@ public class Controller {
         else if(brushSelected)
             drawBrushStroke(x1, y1);
         else if(rectangleSelected)
-            drawRectangle(x, y, x1, y1);
+            drawRectangle(x, y, x1, y1, shape);
         else if(checkBoxEraser.isSelected())
             drawBrushStroke(x1, y1);
     }
@@ -111,15 +108,6 @@ public class Controller {
         ((sample.model.Line)shape).setStartPoint(new Point2D(startX,startY));
         ((sample.model.Line)shape).setEndPoint(new Point2D(endX,endY));
         drawShape(shape);
-       /* this.line = new Line();
-
-        this.line.setStroke(colorPicker.getValue());
-        this.line.setStrokeWidth(sliderSize.getValue());
-        this.line.setStartX(startX);
-        this.line.setStartY(startY);
-        this.line.setEndX(endX);
-        this.line.setEndY(endY);
-        pane.getChildren().add(this.line);*/
     }
 
     public void drawCircle(double startX, double startY, double endX, double endY) {
@@ -153,45 +141,15 @@ public class Controller {
         pane.getChildren().add(brushStroke);
     }
 
-    public void drawRectangle(double startX, double startY, double endX, double endY)
+    public void drawRectangle(double startX, double startY, double endX, double endY, Shape shape)
     {
-        this.rectangle = new Rectangle();
-
-        if(endX > startX && endY > startY)
-        {
-            this.rectangle.setHeight((endY-startY));
-            this.rectangle.setWidth((endX-startX));
-            this.rectangle.setX(startX);
-            this.rectangle.setY(startY);
-        }
-        else if(endX < startX && endY > startY) {
-            this.rectangle.setHeight((endY-startY));
-            this.rectangle.setWidth((startX-endX));
-            this.rectangle.setX(endX);
-            this.rectangle.setY(startY);
-        }
-        else if(endX > startX && endY < startY) {
-            this.rectangle.setHeight(startY-endY);
-            this.rectangle.setWidth(endX-startX);
-            this.rectangle.setX(startX);
-            this.rectangle.setY(endY);
-        }
-        else if(endX < startX && endY < startY) {
-            this.rectangle.setHeight(startY-endY);
-            this.rectangle.setWidth(startX-endX);
-            this.rectangle.setX(endX);
-            this.rectangle.setY(endY);
-        }
-
-        this.rectangle.setStroke(colorPicker.getValue());
-        this.rectangle.setStrokeWidth(sliderSize.getValue());
-        this.rectangle.setFill(Color.TRANSPARENT);
-
-        pane.getChildren().add(rectangle);
+        ((sample.model.Rectangle)shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Rectangle)shape).setEndPoint(new Point2D(endX, endY));
+        drawShape(shape);
     }
 
     private void drawShape(Shape shape) {
-        shape.setFillColor(Color.WHITE);
+        shape.setFillColor(Color.TRANSPARENT);
         shape.setColor(colorPicker.getValue());
         shape.setStrokeWidth(sliderSize.getValue());
         shape.draw(pane);
