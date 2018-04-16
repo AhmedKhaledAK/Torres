@@ -103,21 +103,21 @@ public class Rectangle extends AbstractShape {
             rectangle.setY(getStartPoint().getY());
         }
         else if(getEndPoint().getX() > getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
-            this.rectangle.setHeight(getStartPoint().getY() - this.getEndPoint().getY());
-            this.rectangle.setWidth(this.getEndPoint().getX() - this.getStartPoint().getX());
-            this.rectangle.setX(this.getStartPoint().getX());
+            rectangle.setHeight(getStartPoint().getY() - this.getEndPoint().getY());
+            rectangle.setWidth(this.getEndPoint().getX() - this.getStartPoint().getX());
+            rectangle.setX(this.getStartPoint().getX());
             this.rectangle.setY(this.getEndPoint().getY());
         }
         else if(this.getEndPoint().getX() < this.getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
-            this.rectangle.setHeight(this.getStartPoint().getY() - this.getEndPoint().getY());
-            this.rectangle.setWidth(this.getStartPoint().getX() - this.getEndPoint().getX());
-            this.rectangle.setX(this.getEndPoint().getX());
-            this.rectangle.setY(this.getEndPoint().getY());
+            rectangle.setHeight(this.getStartPoint().getY() - this.getEndPoint().getY());
+            rectangle.setWidth(this.getStartPoint().getX() - this.getEndPoint().getX());
+            rectangle.setX(this.getEndPoint().getX());
+            rectangle.setY(this.getEndPoint().getY());
         }
 
-        this.rectangle.setStroke(getColor());
-        this.rectangle.setStrokeWidth(getStrokeWidth());
-        this.rectangle.setFill(getFillColor());
+        rectangle.setStroke(getColor());
+        rectangle.setStrokeWidth(getStrokeWidth());
+        rectangle.setFill(getFillColor());
 
         p.getChildren().add(rectangle);
 

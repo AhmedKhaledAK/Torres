@@ -12,8 +12,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import sample.files.FileClass;
 import sample.model.Shape;
 import sample.model.ShapeFactory;
+
+import java.util.ArrayList;
 
 public class Controller {
 
@@ -33,6 +36,8 @@ public class Controller {
     private boolean lineSelected = false;
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
+
+    ArrayList<Shape> shapes;
 
     Circle circle = null;
     Circle brushStroke = null;
@@ -60,6 +65,11 @@ public class Controller {
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
         shape = shapeFactory.createShape("rect");
+    }
+
+    public void onBtnSaveClick(ActionEvent actionEvent) {
+        FileClass fileClass = new FileClass("save");
+        fileClass.save(shapes);
     }
 
 
