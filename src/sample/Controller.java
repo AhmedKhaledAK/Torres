@@ -64,7 +64,7 @@ public class Controller {
     @FXML
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
-        shape = shapeFactory.createShape("rect");
+        shape = shapeFactory.createShape("rectangle");
     }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {

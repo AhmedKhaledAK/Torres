@@ -20,7 +20,6 @@ public class JSONFile implements ISaveLoadStrategy {
     @Override
     public void save(ArrayList<Shape> shapes, String filepath) {
         JSONArray list = new JSONArray();
-
         try
         {
             FileWriter file = new FileWriter(filepath);
@@ -70,7 +69,6 @@ public class JSONFile implements ISaveLoadStrategy {
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
             for (Object o : array) {
-
                 JSONObject jsonObject2 = (JSONObject) o;
                 String name = (String) jsonObject2.get("name");
                 String color = (String) jsonObject2.get("color");
@@ -84,14 +82,16 @@ public class JSONFile implements ISaveLoadStrategy {
                     endY = (Double) jsonObject2.get("end-y");
                 }
                 Shape shape = shapeFactory.createShape(name);
-                ((AbstractShape)shape).setName(name);
                 shape.setColor(Color.web(color));
                 shape.setFillColor(Color.web(fillColor));
                 shape.setStrokeWidth(strokeWidth);
+                ((AbstractShape)shape).setName(name);
                 if(name.equals("line"))
                 {
                     ((Line)shape).setStartPoint(new Point2D(startX,startY));
                     ((Line)shape).setEndPoint(new Point2D(endX,endY));
+                    System.out.println(((Line) shape).getStartPoint().toString() + " " + ((Line) shape).getEndPoint().toString()
+                    + " "+ shape.getColor().toString());
                 }
                 else if (name.equals("rectangle"))
                 {
