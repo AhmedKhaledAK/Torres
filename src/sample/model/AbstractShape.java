@@ -16,4 +16,8 @@ public abstract class AbstractShape implements Shape {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
