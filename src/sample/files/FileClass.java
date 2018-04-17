@@ -9,35 +9,43 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class FileClass {
-    private ISaveLoadStrategy strategy;
-    private String extension;
-    private File file;
-    private FileChooser fileChooser;
+    ISaveLoadStrategy strategy;
+    String extension;
+    File file;
+    String filepath, charset;
+    private boolean append, autoFlush;
+    String type;
+    FileChooser fileChooser;
+    FileChooser.ExtensionFilter extensionFilter;
 
-    public FileClass(){
+    public FileClass(String type){
+        this.type=type;
+        this.append = false;
+        this.autoFlush = true;
         fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("JSON or XML",
+        extensionFilter = new FileChooser.ExtensionFilter("JSON or XML",
                 "*.json", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
     }
 
     public void save(ArrayList<Shape> shapes){
-        fileChooser.setTitle("Save");
-        file = fileChooser.showSaveDialog(Main.stage);
-        extension = getFileExtension(file.getName());
-        System.out.println(extension);
-        if (extension.equals("json")) strategy = new JSONFile();
-        else strategy = new XMLFile();
-        strategy.save(shapes, file.getAbsolutePath());
-    }
-
-    public ArrayList<Shape> load(){
-        fileChooser.setTitle("Open");
-        file = fileChooser.showOpenDialog(Main.stage);
-        extension = getFileExtension(file.getName());
-        if(extension.equals("json")) strategy = new JSONFile();
-        else strategy = new XMLFile();
-        return strategy.load(file.getAbsolutePath());
+        if(type.trim().equals("save")){
+            fileChooser.setTitle("Save");
+            file = fileChooser.showSaveDialog(Main.stage);
+            extension = getFileExtension(file.getName());
+            System.out.println(extension);
+            if(extension.equals("json")) strategy = new JSONFile();
+            else strategy = new XMLFile();
+            strategy.save(shapes,file.getAbsolutePath());
+        }
+        else {
+            fileChooser.setTitle("Open");
+            file = fileChooser.showOpenDialog(Main.stage);
+            extension = getFileExtension(file.getName());
+            if(extension.equals("json")) strategy = new JSONFile();
+            else strategy = new XMLFile();
+            strategy.load();
+        }
     }
 
     private String getFileExtension(String extension){

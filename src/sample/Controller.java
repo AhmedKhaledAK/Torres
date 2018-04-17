@@ -68,13 +68,11 @@ public class Controller {
     }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
-        FileClass fileClass = new FileClass();
+        FileClass fileClass = new FileClass("save");
         fileClass.save(shapesList);
     }
 
     public void onBtnLoadClick(ActionEvent actionEvent) {
-        FileClass fileClass = new FileClass();
-        shapesList=fileClass.load();
     }
 
 

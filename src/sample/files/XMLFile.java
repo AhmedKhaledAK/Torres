@@ -13,7 +13,7 @@ public class XMLFile  implements ISaveLoadStrategy {
     }
 
     @Override
-    public ArrayList<Shape> load(String filepath) {
+    public ArrayList<Shape> load() {
         return null;
     }
 }

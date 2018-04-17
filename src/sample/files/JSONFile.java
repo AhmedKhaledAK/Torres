@@ -1,7 +1,5 @@
 package sample.files;
 
-import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import sample.model.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,16 +19,20 @@ public class JSONFile implements ISaveLoadStrategy {
     public void save(ArrayList<Shape> shapes, String filepath) {
         JSONArray list = new JSONArray();
 
+
         try
         {
             FileWriter file = new FileWriter(filepath);
+
             for(int i=0; i<shapes.size(); i++)
             {
                 JSONObject jsonObject = new JSONObject();
+
                 jsonObject.put("name", ((AbstractShape)shapes.get(i)).getName());
                 jsonObject.put("color", shapes.get(i).getColor().toString());
                 jsonObject.put("strokeWidth", new Double(shapes.get(i).getStrokeWidth()));
                 jsonObject.put("fillColor", shapes.get(i).getFillColor().toString());
+
                 if(shapes.get(i) instanceof Line)
                 {
                     jsonObject.put("start-x", ((Line)shapes.get(i)).getStartPoint().getX());
@@ -48,6 +50,7 @@ public class JSONFile implements ISaveLoadStrategy {
 
                 list.add(jsonObject);
             }
+
             list.writeJSONString(file);
             file.flush();
             file.close();
@@ -55,56 +58,37 @@ public class JSONFile implements ISaveLoadStrategy {
         }catch(Exception e) {
             e.printStackTrace();
         }
-    }
 
-    @Override
-    public ArrayList<Shape> load(String filepath) {
+        System.out.println("loading...");
         JSONParser parser = new JSONParser();
-        ArrayList<Shape> shapes = new ArrayList<>();
-        ShapeFactory shapeFactory = new ShapeFactory();
-        double startX=0;
-        double startY=0;
-        double endX=0;
-        double endY=0;
+
         try
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
             for (Object o : array) {
-
                 JSONObject jsonObject2 = (JSONObject) o;
                 String name = (String) jsonObject2.get("name");
                 String color = (String) jsonObject2.get("color");
                 String fillColor = (String) jsonObject2.get("fillColor");
-                double strokeWidth = (Double) jsonObject2.get("strokeWidth");
-                if(name.equals("line") || name.equals("rectangle"))
-                {
-                    startX = (Double) jsonObject2.get("start-x");
-                    startY = (Double) jsonObject2.get("start-y");
-                    endX = (Double) jsonObject2.get("end-x");
-                    endY = (Double) jsonObject2.get("end-y");
-                }
-                Shape shape = shapeFactory.createShape(name);
-                ((AbstractShape)shape).setName(name);
-                shape.setColor(Color.web(color));
-                shape.setFillColor(Color.web(fillColor));
-                shape.setStrokeWidth(strokeWidth);
-                if(name.equals("line"))
-                {
-                    ((Line)shape).setStartPoint(new Point2D(startX,startY));
-                    ((Line)shape).setEndPoint(new Point2D(endX,endY));
-                }
-                else if (name.equals("rectangle"))
-                {
-                    ((Rectangle)shape).setStartPoint(new Point2D(startX,startY));
-                    ((Rectangle)shape).setEndPoint(new Point2D(endX,endY));
-                }
-                shapes.add(shape);
+                double startX = (Double) jsonObject2.get("start-x");
+                double startY = (Double) jsonObject2.get("start-y");
+                double endX = (Double) jsonObject2.get("end-x");
+                double endY = (Double) jsonObject2.get("end-y");
+
+                System.out.println(name + " " + color + " " + fillColor
+                        + " " + startX +" " +  startY + " " +  endX + " " +  endY);
+
             }
 
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        return shapes;
+
+    }
+
+    @Override
+    public ArrayList<Shape> load() {
+        return null;
     }
 }
