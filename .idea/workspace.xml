@@ -82,11 +82,12 @@
       <file leaf-file-name="JSONFile.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/files/JSONFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-187">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="318">
+              <caret line="41" column="55" selection-start-line="41" selection-start-column="55" selection-end-line="41" selection-end-column="55" />
               <folding>
-                <element signature="e#1579#1580#0" expanded="true" />
-                <element signature="e#1606#1607#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1362#1363#0" expanded="true" />
+                <element signature="e#1389#1390#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -447,7 +448,7 @@
     <option name="totallyTimeSpent" value="1302000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -911,11 +912,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/files/JSONFile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-187">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="318">
+          <caret line="41" column="55" selection-start-line="41" selection-start-column="55" selection-end-line="41" selection-end-column="55" />
           <folding>
-            <element signature="e#1579#1580#0" expanded="true" />
-            <element signature="e#1606#1607#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1362#1363#0" expanded="true" />
+            <element signature="e#1389#1390#0" expanded="true" />
           </folding>
         </state>
       </provider>
