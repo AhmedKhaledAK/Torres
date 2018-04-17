@@ -72,6 +72,9 @@ public class Controller {
         fileClass.save(shapesList);
     }
 
+    public void onBtnLoadClick(ActionEvent actionEvent) {
+    }
+
 
 
     public void onMouseDragged(MouseEvent mouseEvent) {

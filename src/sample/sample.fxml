@@ -20,8 +20,9 @@
                   <CheckBox fx:id="checkBoxEraser" mnemonicParsing="false" prefHeight="38.0" prefWidth="67.0" text="Eraser" />
                   <Button mnemonicParsing="false" onAction="#onBtnLineClick" text="Line" />
                    <Button mnemonicParsing="false" onAction="#onBtnCircleClick" text="Circle" />
-                   <Button mnemonicParsing="false" onAction="#onBtnRectClick" text="Rectangle" />
+                   <Button mnemonicParsing="false" onAction="#onBtnRectClick" prefHeight="39.0" prefWidth="88.0" text="Rectangle" />
                   <Button mnemonicParsing="false" onAction="#onBtnSaveClick" text="Save" />
+                  <Button mnemonicParsing="false" onAction="#onBtnLoadClick" text="Load" />
                </children>
             </HBox>
          </children>
