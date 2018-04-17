@@ -12,7 +12,7 @@ public class Line extends AbstractShape {
     private javafx.scene.shape.Line line;
 
     public Line(){
-        this.name ="line";
+        this.name = "line";
     }
 
     @Override

@@ -12,6 +12,10 @@ public class Rectangle extends AbstractShape {
     private Point2D endPoint;
     private javafx.scene.shape.Rectangle rectangle;
 
+    public Rectangle(){
+        this.name = "rectangle";
+    }
+
     public Point2D getStartPoint() {
 
         return startPoint;
