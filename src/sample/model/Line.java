@@ -11,6 +11,10 @@ public class Line extends AbstractShape {
     private Point2D endPoint;
     private javafx.scene.shape.Line line;
 
+    public Line(){
+        this.name ="line";
+    }
+
     @Override
     public void setPosition(Point2D position) {
          this.position = position;

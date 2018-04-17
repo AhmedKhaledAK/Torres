@@ -6,8 +6,9 @@ import sample.model.Shape;
 import java.util.ArrayList;
 
 public class XMLFile  implements ISaveLoadStrategy {
+
     @Override
-    public void save(ArrayList<Shape> shapes) {
+    public void save(ArrayList<Shape> shapes, String filepath) {
 
     }
 

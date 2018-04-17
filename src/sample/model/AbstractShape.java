@@ -11,4 +11,9 @@ public abstract class AbstractShape implements Shape {
     Color color;
     Color fillColor;
     double width;
+    String name;
+
+    public String getName() {
+        return name;
+    }
 }

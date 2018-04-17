@@ -37,7 +37,7 @@ public class Controller {
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
 
-    ArrayList<Shape> shapes;
+    ArrayList<Shape> shapesList = new ArrayList<>();
 
     Circle circle = null;
     Circle brushStroke = null;
@@ -69,7 +69,7 @@ public class Controller {
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
         FileClass fileClass = new FileClass("save");
-        fileClass.save(shapes);
+        fileClass.save(shapesList);
     }
 
 
@@ -112,6 +112,8 @@ public class Controller {
             drawRectangle(x, y, x1, y1, shape);
         else if(checkBoxEraser.isSelected())
             drawBrushStroke(x1, y1);
+
+        shapesList.add(shape);
     }
 
     public void drawLine(double startX, double startY, double endX, double endY, Shape shape){

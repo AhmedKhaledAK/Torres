@@ -29,32 +29,23 @@ public class FileClass {
     }
 
     public void save(ArrayList<Shape> shapes){
-        String t;
         if(type.trim().equals("save")){
             fileChooser.setTitle("Save");
             file = fileChooser.showSaveDialog(Main.stage);
             extension = getFileExtension(file.getName());
             System.out.println(extension);
-            t=compareType(extension);
-            System.out.println(t);
-            if(t.equals("json")) strategy = new JSONFile();
+            if(extension.equals("json")) strategy = new JSONFile();
             else strategy = new XMLFile();
-            strategy.save(shapes);
+            strategy.save(shapes,file.getAbsolutePath());
         }
         else {
             fileChooser.setTitle("Open");
             file = fileChooser.showOpenDialog(Main.stage);
             extension = getFileExtension(file.getName());
-            t=compareType(extension);
-            if(t.equals("json")) strategy = new JSONFile();
+            if(extension.equals("json")) strategy = new JSONFile();
             else strategy = new XMLFile();
             strategy.load();
         }
-    }
-
-    private String compareType(String extension) {
-        if(extension.trim().equals("json")) return "json";
-        return "xml";
     }
 
     private String getFileExtension(String extension){
