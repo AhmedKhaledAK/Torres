@@ -53,7 +53,6 @@ public class Controller {
     @FXML
     public void onBtnLineClick(ActionEvent actionEvent) {
         lineSelected ^= true;
-        shape=shapeFactory.createShape("line");
     }
 
     @FXML
@@ -64,7 +63,6 @@ public class Controller {
     @FXML
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
-        shape = shapeFactory.createShape("rectangle");
     }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
@@ -75,6 +73,9 @@ public class Controller {
     public void onBtnLoadClick(ActionEvent actionEvent) {
         FileClass fileClass = new FileClass();
         shapesList=fileClass.load();
+        
+        for(int i=0; i<shapesList.size(); i++)
+            shapesList.get(i).draw(pane);
     }
 
 
@@ -101,6 +102,11 @@ public class Controller {
     public void onMousePressed(MouseEvent mouseEvent) {
         x = mouseEvent.getSceneX();
         y = mouseEvent.getSceneY();
+
+        if(lineSelected)
+            shape=shapeFactory.createShape("line");
+        else if(rectangleSelected)
+            shape=shapeFactory.createShape("rectangle");
     }
 
     public void onMouseReleased(MouseEvent mouseEvent) {

@@ -18,31 +18,33 @@ import java.util.ArrayList;
 public class JSONFile implements ISaveLoadStrategy {
 
     @Override
-    public void save(ArrayList<Shape> shapes, String filepath) {
+    public void save(ArrayList<Shape> shapesList, String filepath) {
         JSONArray list = new JSONArray();
+        JSONObject jsonObject;
         try
         {
             FileWriter file = new FileWriter(filepath);
-            for(int i=0; i<shapes.size(); i++)
+            for(int i=0; i<shapesList.size(); i++)
             {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("name", ((AbstractShape)shapes.get(i)).getName());
-                jsonObject.put("color", shapes.get(i).getColor().toString());
-                jsonObject.put("strokeWidth", new Double(shapes.get(i).getStrokeWidth()));
-                jsonObject.put("fillColor", shapes.get(i).getFillColor().toString());
-                if(shapes.get(i) instanceof Line)
+                jsonObject = new JSONObject();
+                jsonObject.put("name", ((AbstractShape)shapesList.get(i)).getName());
+                jsonObject.put("color", shapesList.get(i).getColor().toString());
+                jsonObject.put("strokeWidth", new Double(shapesList.get(i).getStrokeWidth()));
+                jsonObject.put("fillColor", shapesList.get(i).getFillColor().toString());
+
+                if(shapesList.get(i) instanceof Line)
                 {
-                    jsonObject.put("start-x", ((Line)shapes.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Line)shapes.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Line)shapes.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Line)shapes.get(i)).getEndPoint().getY());
+                    jsonObject.put("start-x", ((Line)shapesList.get(i)).getStartPoint().getX());
+                    jsonObject.put("start-y", ((Line)shapesList.get(i)).getStartPoint().getY());
+                    jsonObject.put("end-x", ((Line)shapesList.get(i)).getEndPoint().getX());
+                    jsonObject.put("end-y", ((Line)shapesList.get(i)).getEndPoint().getY());
                 }
-                else if(shapes.get(i) instanceof Rectangle)
+                else if(shapesList.get(i) instanceof Rectangle)
                 {
-                    jsonObject.put("start-x", ((Rectangle)shapes.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Rectangle)shapes.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Rectangle)shapes.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Rectangle)shapes.get(i)).getEndPoint().getY());
+                    jsonObject.put("start-x", ((Rectangle)shapesList.get(i)).getStartPoint().getX());
+                    jsonObject.put("start-y", ((Rectangle)shapesList.get(i)).getStartPoint().getY());
+                    jsonObject.put("end-x", ((Rectangle)shapesList.get(i)).getEndPoint().getX());
+                    jsonObject.put("end-y", ((Rectangle)shapesList.get(i)).getEndPoint().getY());
                 }
 
                 list.add(jsonObject);
@@ -59,8 +61,10 @@ public class JSONFile implements ISaveLoadStrategy {
     @Override
     public ArrayList<Shape> load(String filepath) {
         JSONParser parser = new JSONParser();
-        ArrayList<Shape> shapes = new ArrayList<>();
+        ArrayList<Shape> shapesList = new ArrayList<>();
         ShapeFactory shapeFactory = new ShapeFactory();
+        Shape shape;
+
         double startX=0;
         double startY=0;
         double endX=0;
@@ -69,42 +73,47 @@ public class JSONFile implements ISaveLoadStrategy {
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
             for (Object o : array) {
-                JSONObject jsonObject2 = (JSONObject) o;
-                String name = (String) jsonObject2.get("name");
-                String color = (String) jsonObject2.get("color");
-                String fillColor = (String) jsonObject2.get("fillColor");
-                double strokeWidth = (Double) jsonObject2.get("strokeWidth");
+                JSONObject jsonObject = (JSONObject) o;
+                String name = (String) jsonObject.get("name");
+                String color = (String) jsonObject.get("color");
+                String fillColor = (String) jsonObject.get("fillColor");
+                double strokeWidth = (Double) jsonObject.get("strokeWidth");
+
                 if(name.equals("line") || name.equals("rectangle"))
                 {
-                    startX = (Double) jsonObject2.get("start-x");
-                    startY = (Double) jsonObject2.get("start-y");
-                    endX = (Double) jsonObject2.get("end-x");
-                    endY = (Double) jsonObject2.get("end-y");
+                    startX = (Double) jsonObject.get("start-x");
+                    startY = (Double) jsonObject.get("start-y");
+                    endX = (Double) jsonObject.get("end-x");
+                    endY = (Double) jsonObject.get("end-y");
                 }
-                Shape shape = shapeFactory.createShape(name);
+
+                shape = shapeFactory.createShape(name);
                 shape.setColor(Color.web(color));
                 shape.setFillColor(Color.web(fillColor));
                 shape.setStrokeWidth(strokeWidth);
                 ((AbstractShape)shape).setName(name);
+
                 if(name.equals("line"))
                 {
                     ((Line)shape).setStartPoint(new Point2D(startX,startY));
                     ((Line)shape).setEndPoint(new Point2D(endX,endY));
-                    System.out.println(((Line) shape).getStartPoint().toString() + " " + ((Line) shape).getEndPoint().toString()
-                    + " "+ shape.getColor().toString());
+                    System.out.println(((Line) shape).getStartPoint().toString() + " " +
+                            ((Line) shape).getEndPoint().toString());
                 }
                 else if (name.equals("rectangle"))
                 {
                     ((Rectangle)shape).setStartPoint(new Point2D(startX,startY));
                     ((Rectangle)shape).setEndPoint(new Point2D(endX,endY));
                 }
-                shapes.add(shape);
-            }
+                System.out.println(((AbstractShape) shape).getName() + " " +
+                        shape.getColor() + " " + shape.getStrokeWidth());
 
+                shapesList.add(shape);
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        return shapes;
+        return shapesList;
     }
 }
