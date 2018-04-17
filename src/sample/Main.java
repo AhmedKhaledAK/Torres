@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static Stage stage=null;
+    public static Scene scene = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -17,7 +18,8 @@ public class Main extends Application {
         //sets the background color to white
         root.setStyle("-fx-background-color: #FFFFFF;");
         primaryStage.setTitle("Paint");
-        primaryStage.setScene(new Scene(root, 800, 800));
+        scene = new Scene(root);
+        primaryStage.setScene(scene);
         stage=primaryStage;
         primaryStage.show();
     }

@@ -3,9 +3,12 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Slider;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -13,6 +16,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import sample.files.FileClass;
+import sample.lang.Lang;
 import sample.model.Shape;
 import sample.model.ShapeFactory;
 
@@ -20,6 +24,10 @@ import java.util.ArrayList;
 
 public class Controller {
 
+    @FXML
+    public Button btnBrsuh,btnLine, btnRect, btnCircle, btnSave, btnLoad;
+    @FXML
+    public Label lblCoordinates;
     @FXML
     private ColorPicker colorPicker;
 
@@ -45,24 +53,25 @@ public class Controller {
     ShapeFactory shapeFactory = new ShapeFactory();
     private double x=0,y=0;
 
-    @FXML
+    /**Button Clicks*/
+
     public void onBtnBrushClick(ActionEvent actionEvent) {
         brushSelected ^= true;
     }
 
-    @FXML
     public void onBtnLineClick(ActionEvent actionEvent) {
         lineSelected ^= true;
+        Main.scene.setCursor(Cursor.CROSSHAIR);
     }
 
-    @FXML
     public void onBtnCircleClick(ActionEvent actionEvent) {
         circleSelected ^= true;
+        Main.scene.setCursor(Cursor.CROSSHAIR);
     }
 
-    @FXML
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
+        Main.scene.setCursor(Cursor.CROSSHAIR);
     }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
@@ -78,7 +87,9 @@ public class Controller {
             shapesList.get(i).draw(pane);
     }
 
+    /*End of Button Clicks*/
 
+    /**Pane Actions*/
 
     public void onMouseDragged(MouseEvent mouseEvent) {
         double x1=mouseEvent.getSceneX();
@@ -127,6 +138,39 @@ public class Controller {
         shapesList.add(shape);
     }
 
+    public void onMouseMoved(MouseEvent mouseEvent) {
+        lblCoordinates.setText("X: " + mouseEvent.getSceneX() + ", Y: " + mouseEvent.getSceneY());
+    }
+
+    public void onKeyPressed(KeyEvent e) {
+
+        String type = "";
+        if(e.getCode() == KeyCode.L)
+        {
+            type = "Line";
+            lineSelected = true;
+            rectangleSelected = false;
+            circleSelected = false;
+        }
+        else if (e.getCode() == KeyCode.C)
+        {
+            type = "Circle";
+            circleSelected = true;
+            rectangleSelected = false;
+            lineSelected = false;
+        }
+        else if(e.getCode() == KeyCode.R){
+            type = "Rectangle";
+            circleSelected = false;
+            rectangleSelected = true;
+            lineSelected = false;
+        }
+        Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
+        Main.scene.setCursor(Cursor.CROSSHAIR);
+    }
+    /*End of Pane Actions*/
+
+    /** Helper Method*/
     public void drawLine(double startX, double startY, double endX, double endY, Shape shape){
         ((sample.model.Line)shape).setStartPoint(new Point2D(startX,startY));
         ((sample.model.Line)shape).setEndPoint(new Point2D(endX,endY));
@@ -178,4 +222,18 @@ public class Controller {
         shape.draw(pane);
     }
 
+    /*End of Helper Methods*/
+
+    @FXML
+    public void initialize(){
+        btnBrsuh.setCursor(Cursor.HAND);
+        btnLine.setCursor(Cursor.HAND);
+        btnCircle.setCursor(Cursor.HAND);
+        btnLoad.setCursor(Cursor.HAND);
+        btnRect.setCursor(Cursor.HAND);
+        btnSave.setCursor(Cursor.HAND);
+        colorPicker.setCursor(Cursor.HAND);
+        sliderSize.setCursor(Cursor.HAND);
+        checkBoxEraser.setCursor(Cursor.HAND);
+    }
 }
