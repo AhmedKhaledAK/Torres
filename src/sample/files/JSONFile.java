@@ -70,7 +70,6 @@ public class JSONFile implements ISaveLoadStrategy {
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
             for (Object o : array) {
-
                 JSONObject jsonObject2 = (JSONObject) o;
                 String name = (String) jsonObject2.get("name");
                 String color = (String) jsonObject2.get("color");
@@ -92,6 +91,7 @@ public class JSONFile implements ISaveLoadStrategy {
                 {
                     ((Line)shape).setStartPoint(new Point2D(startX,startY));
                     ((Line)shape).setEndPoint(new Point2D(endX,endY));
+                    System.out.println(((Line) shape).getStartPoint().toString() + " " + ((Line) shape).getEndPoint().toString());
                 }
                 else if (name.equals("rectangle"))
                 {
