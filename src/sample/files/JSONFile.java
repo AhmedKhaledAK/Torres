@@ -2,17 +2,12 @@ package sample.files;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import sample.model.*;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.*;
+import sample.model.*;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class JSONFile implements ISaveLoadStrategy {
@@ -52,7 +47,6 @@ public class JSONFile implements ISaveLoadStrategy {
             list.writeJSONString(file);
             file.flush();
             file.close();
-
         }catch(Exception e) {
             e.printStackTrace();
         }
