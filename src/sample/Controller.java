@@ -79,7 +79,7 @@ public class Controller {
         FileClass fileClass = new FileClass();
         shapesList=fileClass.load();
 
-//        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
+        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 
     /*End of Button Clicks*/
@@ -221,7 +221,7 @@ public class Controller {
 
     @FXML
     public void initialize(){
-        btnBrsuh.setCursor(Cursor.HAND);
+        /*btnBrsuh.setCursor(Cursor.HAND);
         btnLine.setCursor(Cursor.HAND);
         btnCircle.setCursor(Cursor.HAND);
         btnLoad.setCursor(Cursor.HAND);
@@ -229,6 +229,6 @@ public class Controller {
         btnSave.setCursor(Cursor.HAND);
         colorPicker.setCursor(Cursor.HAND);
         sliderSize.setCursor(Cursor.HAND);
-        checkBoxEraser.setCursor(Cursor.HAND);
+        checkBoxEraser.setCursor(Cursor.HAND);*/
     }
 }

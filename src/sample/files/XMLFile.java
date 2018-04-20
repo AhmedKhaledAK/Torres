@@ -1,5 +1,7 @@
 package sample.files;
 
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import sample.model.*;
@@ -10,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class XMLFile implements ISaveLoadStrategy {
 
@@ -59,22 +60,51 @@ public class XMLFile implements ISaveLoadStrategy {
 
     @Override
     public ArrayList<Shape> load(String filepath) {
+        String[] array = new String[20];
+        ShapeFactory shapeFactory = new ShapeFactory();
+        Shape shape = null;
+        ArrayList<Shape> shapesList = new ArrayList<>();
+        int j=0;
+
         SAXReader saxReader = new SAXReader();
         try {
             Document document = saxReader.read(new FileReader(filepath));
             Element root = document.getRootElement();
+
             for (Iterator<Element> it = root.elementIterator(); it.hasNext();) {
                 Element element = it.next();
-                System.out.println(element.getName());
+                //System.out.println(element.getName());
+
                 for (Iterator<Attribute> i = element.attributeIterator(); i.hasNext();) {
                     Attribute attribute = i.next();
                     System.out.println(attribute.getValue());
+
+                    array[j++] = attribute.getValue();
                 }
+                j=0;
+
+                shape = shapeFactory.createShape(array[0]);
+                shape.setColor(Color.web(array[1]));
+                shape.setStrokeWidth(Double.parseDouble(array[2]));
+                shape.setFillColor(Color.web(array[3]));
+
+                if(shape instanceof Line)
+                {
+                    ((Line)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
+                    ((Line)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                }
+                else if(shape instanceof Rectangle)
+                {
+                    ((Rectangle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
+                    ((Rectangle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                }
+
+                shapesList.add(shape);
                 System.out.println("--------------------------");
             }
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return shapesList;
     }
 }
