@@ -1,12 +1,16 @@
 package sample.files;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.dom4j.*;
+import org.dom4j.io.SAXReader;
 import sample.model.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class XMLFile implements ISaveLoadStrategy {
 
@@ -28,7 +32,7 @@ public class XMLFile implements ISaveLoadStrategy {
                         "fillColor", aShapesList.getFillColor().toString());
                 if (aShapesList instanceof Line)
                 {
-                    element = element.addAttribute("start-x",
+                    element.addAttribute("start-x",
                             ((Line) aShapesList).getStartPoint().getX() + "").addAttribute(
                             "start-y", ((Line) aShapesList).getStartPoint().getY() + "").addAttribute(
                             "end-x", ((Line) aShapesList).getEndPoint().getX() + "").addAttribute(
@@ -36,7 +40,7 @@ public class XMLFile implements ISaveLoadStrategy {
                 }
                 else if (aShapesList instanceof Rectangle)
                 {
-                    element = element.addAttribute("start-x",
+                    element.addAttribute("start-x",
                             ((Rectangle) aShapesList).getStartPoint().getX() + "").addAttribute(
                             "start-y", ((Rectangle) aShapesList).getStartPoint().getY() + "").addAttribute(
                             "end-x", ((Rectangle) aShapesList).getEndPoint().getX() + "").addAttribute(
@@ -55,7 +59,22 @@ public class XMLFile implements ISaveLoadStrategy {
 
     @Override
     public ArrayList<Shape> load(String filepath) {
-        
+        SAXReader saxReader = new SAXReader();
+        try {
+            Document document = saxReader.read(new FileReader(filepath));
+            Element root = document.getRootElement();
+            for (Iterator<Element> it = root.elementIterator(); it.hasNext();) {
+                Element element = it.next();
+                System.out.println(element.getName());
+                for (Iterator<Attribute> i = element.attributeIterator(); i.hasNext();) {
+                    Attribute attribute = i.next();
+                    System.out.println(attribute.getValue());
+                }
+                System.out.println("--------------------------");
+            }
+        } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

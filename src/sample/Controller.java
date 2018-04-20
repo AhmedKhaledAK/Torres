@@ -78,9 +78,8 @@ public class Controller {
     public void onBtnLoadClick(ActionEvent actionEvent) {
         FileClass fileClass = new FileClass();
         shapesList=fileClass.load();
-        
-        for(int i=0; i<shapesList.size(); i++)
-            shapesList.get(i).draw(pane);
+
+//        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 
     /*End of Button Clicks*/
