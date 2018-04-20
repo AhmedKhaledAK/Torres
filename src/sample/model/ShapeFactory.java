@@ -3,12 +3,13 @@ package sample.model;
 public class ShapeFactory {
 
     public Shape createShape(String inst){
-        if(inst.equals("line")){
-            return new Line();
-        }else if(inst.equals("rectangle")) {
-            return new Rectangle();
-        }else if(inst.equals("circle")){
-
+        switch (inst) {
+            case "line":
+                return new Line();
+            case "rectangle":
+                return new Rectangle();
+            case "circle":
+                return new Circle();
         }
         return null;
     }

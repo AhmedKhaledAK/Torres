@@ -1,7 +1,9 @@
 package sample.model;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -19,5 +21,7 @@ public interface Shape {
     void setStrokeWidth(double width);
     double getStrokeWidth();
     void draw(Object pane);
+    void move(MouseEvent e);
+    void moveDrag(MouseEvent e);
     void removeDeprecated(Pane pane);
 }

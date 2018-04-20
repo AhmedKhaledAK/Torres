@@ -1,6 +1,8 @@
 package sample.model;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -17,22 +19,18 @@ public class Rectangle extends AbstractShape {
     }
 
     public Point2D getStartPoint() {
-
         return startPoint;
     }
 
     public void setStartPoint(Point2D startPoint) {
-
         this.startPoint = startPoint;
     }
 
     public Point2D getEndPoint() {
-
         return endPoint;
     }
 
     public void setEndPoint(Point2D endPoint) {
-
         this.endPoint = endPoint;
     }
 
@@ -124,6 +122,16 @@ public class Rectangle extends AbstractShape {
         rectangle.setFill(getFillColor());
 
         p.getChildren().add(rectangle);
+
+    }
+
+    @Override
+    public void move(MouseEvent e) {
+
+    }
+
+    @Override
+    public void moveDrag(MouseEvent e) {
 
     }
 

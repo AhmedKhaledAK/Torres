@@ -1,6 +1,8 @@
 package sample.model;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import java.util.Map;
@@ -93,6 +95,16 @@ public class Line extends AbstractShape {
         line.setFill(getFillColor());
         line.setStrokeWidth(getStrokeWidth());
         p.getChildren().add(line);
+    }
+
+    @Override
+    public void move(MouseEvent e) {
+
+    }
+
+    @Override
+    public void moveDrag(MouseEvent e) {
+
     }
 
     @Override
