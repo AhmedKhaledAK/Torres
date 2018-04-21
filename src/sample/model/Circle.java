@@ -1,14 +1,10 @@
 package sample.model;
 
-import javafx.animation.TranslateTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
-import sample.Main;
 
 import java.util.Map;
 
