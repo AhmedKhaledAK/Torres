@@ -40,6 +40,12 @@ public class JSONFile implements ISaveLoadStrategy {
                     jsonObject.put("start-y", ((Rectangle)shapesList.get(i)).getStartPoint().getY());
                     jsonObject.put("end-x", ((Rectangle)shapesList.get(i)).getEndPoint().getX());
                     jsonObject.put("end-y", ((Rectangle)shapesList.get(i)).getEndPoint().getY());
+                }else if(shapesList.get(i) instanceof Circle)
+                {
+                    jsonObject.put("start-x", ((Circle)shapesList.get(i)).getStartPoint().getX());
+                    jsonObject.put("start-y", ((Circle)shapesList.get(i)).getStartPoint().getY());
+                    jsonObject.put("end-x", ((Circle)shapesList.get(i)).getEndPoint().getX());
+                    jsonObject.put("end-y", ((Circle)shapesList.get(i)).getEndPoint().getY());
                 }
 
                 list.add(jsonObject);
@@ -87,17 +93,21 @@ public class JSONFile implements ISaveLoadStrategy {
                 shape.setStrokeWidth(strokeWidth);
                 ((AbstractShape)shape).setName(name);
 
-                if(name.equals("line"))
-                {
-                    ((Line)shape).setStartPoint(new Point2D(startX,startY));
-                    ((Line)shape).setEndPoint(new Point2D(endX,endY));
-                    System.out.println(((Line) shape).getStartPoint().toString() + " " +
-                            ((Line) shape).getEndPoint().toString());
-                }
-                else if (name.equals("rectangle"))
-                {
-                    ((Rectangle)shape).setStartPoint(new Point2D(startX,startY));
-                    ((Rectangle)shape).setEndPoint(new Point2D(endX,endY));
+                switch (name) {
+                    case "line":
+                        ((Line) shape).setStartPoint(new Point2D(startX, startY));
+                        ((Line) shape).setEndPoint(new Point2D(endX, endY));
+                        System.out.println(((Line) shape).getStartPoint().toString() + " " +
+                                ((Line) shape).getEndPoint().toString());
+                        break;
+                    case "rectangle":
+                        ((Rectangle) shape).setStartPoint(new Point2D(startX, startY));
+                        ((Rectangle) shape).setEndPoint(new Point2D(endX, endY));
+                        break;
+                    case "circle":
+                        ((Circle) shape).setStartPoint(new Point2D(startX, startY));
+                        ((Circle) shape).setEndPoint(new Point2D(endX, endY));
+                        break;
                 }
                 System.out.println(((AbstractShape) shape).getName() + " " +
                         shape.getColor() + " " + shape.getStrokeWidth());

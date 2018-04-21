@@ -47,6 +47,14 @@ public class XMLFile implements ISaveLoadStrategy {
                             "end-x", ((Rectangle) aShapesList).getEndPoint().getX() + "").addAttribute(
                             "end-y", ((Rectangle) aShapesList).getEndPoint().getY() + "");
                 }
+                else if (aShapesList instanceof Circle)
+                {
+                    element.addAttribute("start-x",
+                            ((Circle) aShapesList).getStartPoint().getX() + "").addAttribute(
+                            "start-y", ((Circle) aShapesList).getStartPoint().getY() + "").addAttribute(
+                            "end-x", ((Circle) aShapesList).getEndPoint().getX() + "").addAttribute(
+                            "end-y", ((Circle) aShapesList).getEndPoint().getY() + "");
+                }
             }
             document.write(file);
             file.flush();
@@ -87,7 +95,7 @@ public class XMLFile implements ISaveLoadStrategy {
                 shape.setColor(Color.web(array[1]));
                 shape.setStrokeWidth(Double.parseDouble(array[2]));
                 shape.setFillColor(Color.web(array[3]));
-
+                ((AbstractShape)shape).setName(array[0]);
                 if(shape instanceof Line)
                 {
                     ((Line)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
@@ -97,6 +105,11 @@ public class XMLFile implements ISaveLoadStrategy {
                 {
                     ((Rectangle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
                     ((Rectangle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                }
+                else if(shape instanceof Circle)
+                {
+                    ((Circle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
+                    ((Circle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
                 }
 
                 shapesList.add(shape);

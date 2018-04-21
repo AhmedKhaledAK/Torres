@@ -18,6 +18,10 @@ public class Circle extends AbstractShape {
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
 
+    public Circle(){
+        this.name = "circle";
+    }
+
     public double getDiameter() {
         return diameter;
     }
