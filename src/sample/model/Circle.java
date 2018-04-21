@@ -118,17 +118,19 @@ public class Circle extends AbstractShape {
         this.circle.setStrokeWidth(getStrokeWidth());
         this.circle.setFill(Color.TRANSPARENT);
         this.circle.setRadius(diameter/2);
+        circle.setOnMousePressed(circleOnMousePressedEventHandler);
+        circle.setOnMouseDragged(circleOnMouseDraggedEventHandler);
         p.getChildren().add(circle);
     }
 
     @Override
     public void move(MouseEvent e) {
-            circle.setOnMousePressed(circleOnMousePressedEventHandler);
+        circle.getOnMousePressed();
     }
 
     @Override
     public void moveDrag(MouseEvent e){
-        circle.setOnMouseDragged(circleOnMouseDraggedEventHandler);
+        circle.getOnMouseDragged();
     }
 
     private EventHandler<MouseEvent> circleOnMousePressedEventHandler =
