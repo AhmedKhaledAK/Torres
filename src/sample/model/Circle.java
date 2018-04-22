@@ -3,39 +3,31 @@ package sample.model;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.DragEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.Map;
 
-
 public class Circle extends AbstractShape {
 
-    private double radius;
+    private double diameter;
     private Point2D centerPoint;
     private Point2D startPoint;
     private Point2D endPoint;
     private javafx.scene.shape.Circle circle;
     private double orgSceneX, orgSceneY;
-    private double orgTranslateX=0, orgTranslateY=0;
-    Pane p;
-
-    double originalX = 0;
-    double originalY = 0;
-    double offsetX = 0;
-    double offsetY = 0;
+    private double orgTranslateX, orgTranslateY;
 
     public Circle(){
         this.name = "circle";
     }
 
-    public double getRadius() {
-        return radius;
+    public double getDiameter() {
+        return diameter;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setDiameter(double diameter) {
+        this.diameter = diameter;
     }
 
     public Point2D getCenterPoint() {
@@ -114,7 +106,7 @@ public class Circle extends AbstractShape {
 
     @Override
     public void draw(Object pane) {
-        p = (Pane) pane;
+        Pane p = (Pane) pane;
         this.circle = new javafx.scene.shape.Circle();
         double diameter = Math.sqrt(Math.pow(getEndPoint().getY()-getStartPoint().getY(), 2) +
                 Math.pow(getEndPoint().getX()-getStartPoint().getX(),2));
@@ -122,29 +114,23 @@ public class Circle extends AbstractShape {
         double centerX = (getEndPoint().getX() + getStartPoint().getX()) / 2;
         this.circle.setCenterX(centerX);
         this.circle.setCenterY(centerY);
-        setCenterPoint(new Point2D(circle.getCenterX(), circle.getCenterY()));
-        //this.circle.setStroke(getColor());
-        this.circle.setStroke(Color.BLACK);
-        //this.circle.setStrokeWidth(getStrokeWidth());
-        this.circle.setStrokeWidth(1);
+        this.circle.setStroke(getColor());
+        this.circle.setStrokeWidth(getStrokeWidth());
         this.circle.setFill(Color.TRANSPARENT);
         this.circle.setRadius(diameter/2);
-        setRadius(circle.getRadius());
-
         circle.setOnMousePressed(circleOnMousePressedEventHandler);
         circle.setOnMouseDragged(circleOnMouseDraggedEventHandler);
-        circle.setOnMouseReleased(circleOnMouseReleasedEventHandler);
         p.getChildren().add(circle);
     }
 
     @Override
     public void move(MouseEvent e) {
-        circle.getOnMouseClicked();
+        circle.getOnMousePressed();
     }
 
     @Override
     public void moveDrag(MouseEvent e){
-        circle.getOnMouseDragEntered();
+        circle.getOnMouseDragged();
     }
 
     private EventHandler<MouseEvent> circleOnMousePressedEventHandler =
@@ -155,47 +141,20 @@ public class Circle extends AbstractShape {
                     orgSceneY = e.getSceneY();
                     orgTranslateX = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateX();
                     orgTranslateY = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateY();
-
-                    System.out.println("is clicked");
-                    System.out.println("orgtransx = " + orgTranslateX);
-                    System.out.println("orgtransy = " + orgTranslateY);
-
-//                    originalX = e.getSceneX();
-//                    originalY = e.getSceneY();
-
                 }
             };
-
-    javafx.scene.shape.Circle c2;
 
     private EventHandler<MouseEvent> circleOnMouseDraggedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    //System.out.println("is dragged");
-
                     double offsetX = e.getSceneX() - orgSceneX;
                     double offsetY = e.getSceneY() - orgSceneY;
                     double newTranslateX = orgTranslateX + offsetX;
                     double newTranslateY = orgTranslateY + offsetY;
-
-
-                    c2=((javafx.scene.shape.Circle) (e.getSource()));
-                    c2.setTranslateX(newTranslateX);
-                    c2.setTranslateY(newTranslateY);
-                    p.getChildren().remove(circle);
-
-                    System.out.println("radius is " + circle.getRadius());
-                    System.out.println("x is " + c2.getCenterX());
-                    System.out.println("y is " + c2.getCenterY());
-
+                    ((javafx.scene.shape.Circle)(e.getSource())).setTranslateX(newTranslateX);
+                    ((javafx.scene.shape.Circle)(e.getSource())).setTranslateY(newTranslateY);
                 }
-            };
-
-    private EventHandler<MouseEvent> circleOnMouseReleasedEventHandler =
-            e -> {
-               // p.getChildren().remove(circle);
-                System.out.println("released");
             };
 
     @Override

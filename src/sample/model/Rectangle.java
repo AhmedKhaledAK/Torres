@@ -137,6 +137,7 @@ public class Rectangle extends AbstractShape {
 
     @Override
     public void removeDeprecated(Pane pane) {
-        //pane.getChildren().remove(rectangle);
+        pane.getChildren().remove(rectangle);
+
     }
 }
