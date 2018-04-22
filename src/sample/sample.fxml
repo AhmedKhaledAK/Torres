@@ -11,9 +11,9 @@
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       onKeyPressed="#onKeyPressed"
-      onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased"
+      onMouseMoved="#onMouseMoved"
       prefHeight="525.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="sample.view.Controller">
+      fx:controller="sample.view.View">
    <children>
       <VBox layoutX="-2.0" prefHeight="496.0" prefWidth="811.0">
          <children>

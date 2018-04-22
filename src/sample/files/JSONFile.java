@@ -46,6 +46,9 @@ public class JSONFile implements ISaveLoadStrategy {
                     jsonObject.put("start-y", ((Circle)shapesList.get(i)).getStartPoint().getY());
                     jsonObject.put("end-x", ((Circle)shapesList.get(i)).getEndPoint().getX());
                     jsonObject.put("end-y", ((Circle)shapesList.get(i)).getEndPoint().getY());
+                    jsonObject.put("center-x", ((Circle)shapesList.get(i)).getCenterPoint().getX());
+                    jsonObject.put("center-y", ((Circle)shapesList.get(i)).getCenterPoint().getY());
+                    jsonObject.put("radius", ((Circle)shapesList.get(i)).getRadius());
                 }
 
                 list.add(jsonObject);
@@ -69,6 +72,9 @@ public class JSONFile implements ISaveLoadStrategy {
         double startY=0;
         double endX=0;
         double endY=0;
+        double centerX=0;
+        double centerY=0;
+        double radius=0;
         try
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
@@ -85,6 +91,14 @@ public class JSONFile implements ISaveLoadStrategy {
                     startY = (Double) jsonObject.get("start-y");
                     endX = (Double) jsonObject.get("end-x");
                     endY = (Double) jsonObject.get("end-y");
+                }else if(name.equals("circle")){
+                    startX = (Double) jsonObject.get("start-x");
+                    startY = (Double) jsonObject.get("start-y");
+                    endX = (Double) jsonObject.get("end-x");
+                    endY = (Double) jsonObject.get("end-y");
+                    centerX = (Double) jsonObject.get("center-x");
+                    centerY = (Double) jsonObject.get("center-y");
+                    radius = (Double) jsonObject.get("radius");
                 }
 
                 shape = shapeFactory.createShape(name);
@@ -107,6 +121,8 @@ public class JSONFile implements ISaveLoadStrategy {
                     case "circle":
                         ((Circle) shape).setStartPoint(new Point2D(startX, startY));
                         ((Circle) shape).setEndPoint(new Point2D(endX, endY));
+                        ((Circle)shape).setCenterPoint(new Point2D(centerX,centerY));
+                        ((Circle)shape).setRadius(radius);
                         break;
                 }
                 System.out.println(((AbstractShape) shape).getName() + " " +

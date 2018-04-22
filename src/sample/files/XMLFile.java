@@ -53,7 +53,11 @@ public class XMLFile implements ISaveLoadStrategy {
                             ((Circle) aShapesList).getStartPoint().getX() + "").addAttribute(
                             "start-y", ((Circle) aShapesList).getStartPoint().getY() + "").addAttribute(
                             "end-x", ((Circle) aShapesList).getEndPoint().getX() + "").addAttribute(
-                            "end-y", ((Circle) aShapesList).getEndPoint().getY() + "");
+                            "end-y", ((Circle) aShapesList).getEndPoint().getY() + "").addAttribute(
+                            "center-x", ((Circle) aShapesList).getCenterPoint().getX() + "").addAttribute(
+                            "center-y",((Circle) aShapesList).getCenterPoint().getY() + "").addAttribute(
+                            "radius", ((Circle) aShapesList).getRadius() + "");
+
                 }
             }
             document.write(file);
@@ -70,7 +74,7 @@ public class XMLFile implements ISaveLoadStrategy {
     public ArrayList<Shape> load(String filepath) {
         String[] array = new String[20];
         ShapeFactory shapeFactory = new ShapeFactory();
-        Shape shape = null;
+        Shape shape;
         ArrayList<Shape> shapesList = new ArrayList<>();
         int j=0;
 
@@ -110,6 +114,9 @@ public class XMLFile implements ISaveLoadStrategy {
                 {
                     ((Circle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
                     ((Circle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                    ((Circle)shape).setCenterPoint(new Point2D(Double.parseDouble(array[8]), Double.parseDouble(array[9])));
+                    ((Circle)shape).setRadius(Double.parseDouble(array[10]));
+
                 }
 
                 shapesList.add(shape);

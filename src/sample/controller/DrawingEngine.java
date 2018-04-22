@@ -1,7 +1,7 @@
 package sample.controller;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.shape.Shape;
+import sample.model.Shape;
 
 public interface DrawingEngine {
     void refresh(Canvas canvas);
