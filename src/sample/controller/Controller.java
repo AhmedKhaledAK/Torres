@@ -242,28 +242,28 @@ public class Controller implements DrawingEngine{
     }
 
     @Override
-    public void refresh(Canvas canvas) {
+    public void refresh(Object pane) {
 
     }
 
     @Override
-    public void addShape(javafx.scene.shape.Shape shape) {
+    public void addShape(Shape shape) {
 
     }
 
     @Override
-    public void removeShape(javafx.scene.shape.Shape shape) {
+    public void removeShape(Shape shape) {
 
     }
 
     @Override
-    public void updateShape(javafx.scene.shape.Shape oldShape, javafx.scene.shape.Shape newShape) {
+    public void updateShape(Shape oldShape, Shape newShape) {
 
     }
 
     @Override
-    public javafx.scene.shape.Shape[] getShapes() {
-        return new javafx.scene.shape.Shape[0];
+    public ArrayList<Shape> getShapes() {
+        return shapesList;
     }
 
     @Override
