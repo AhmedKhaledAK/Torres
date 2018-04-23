@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -20,10 +19,10 @@ import sample.view.Main;
 
 import java.util.ArrayList;
 
-public class Controller implements DrawingEngine{
+public class Controller implements DrawingEngine {
 
     @FXML
-    public Button btnBrsuh,btnLine, btnRect, btnCircle, btnSave, btnLoad;
+    public Button btnBrsuh, btnLine, btnRect, btnCircle, btnSave, btnLoad;
     @FXML
     public Label lblCoordinates;
     @FXML
@@ -43,14 +42,16 @@ public class Controller implements DrawingEngine{
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
 
-    ArrayList<Shape> shapesList = new ArrayList<>();
+    public static ArrayList<Shape> shapesList = new ArrayList<>();
 
     Circle brushStroke = null;
     Shape shape = null;
     ShapeFactory shapeFactory = new ShapeFactory();
-    private double x=0,y=0;
+    private double x = 0, y = 0;
 
-    /**Button Clicks*/
+    /**
+     * Button Clicks
+     */
 
     public void onBtnBrushClick(ActionEvent actionEvent) {
         brushSelected ^= true;
@@ -78,35 +79,37 @@ public class Controller implements DrawingEngine{
 
     public void onBtnLoadClick(ActionEvent actionEvent) {
         FileClass fileClass = new FileClass();
-        shapesList=fileClass.load();
+        shapesList = fileClass.load();
 
         for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 
     /*End of Button Clicks*/
 
-    /**Pane Actions*/
+    /**
+     * Pane Actions
+     */
 
     public void onMouseDragged(MouseEvent mouseEvent) {
-        double x1=mouseEvent.getSceneX();
-        double y1=mouseEvent.getSceneY();
+        double x1 = mouseEvent.getSceneX();
+        double y1 = mouseEvent.getSceneY();
 
-        if(mouseEvent.isControlDown()){
-            shape.moveDrag(mouseEvent);
-        }else {
+        if (mouseEvent.isControlDown()) {
+            //shape.moveDrag(mouseEvent);
+
+        } else {
             if (lineSelected) {
                 shape.removeDeprecated(pane);
-                drawLine(x,y,x1,y1,shape);
-            }else if(rectangleSelected) {
+                drawLine(x, y, x1, y1, shape);
+            } else if (rectangleSelected) {
                 shape.removeDeprecated(pane);
                 drawRectangle(x, y, x1, y1, shape);
-            }else if(circleSelected){
+            } else if (circleSelected) {
                 shape.removeDeprecated(pane);
-                drawCircle(x,y,x1,y1);
-            }
-            else if(brushSelected)
+                drawCircle(x, y, x1, y1);
+            } else if (brushSelected)
                 drawBrushStroke(x1, y1);
-            else if(checkBoxEraser.isSelected())
+            else if (checkBoxEraser.isSelected())
                 drawBrushStroke(x1, y1);
         }
     }
@@ -114,15 +117,15 @@ public class Controller implements DrawingEngine{
     public void onMousePressed(MouseEvent mouseEvent) {
         x = mouseEvent.getSceneX();
         y = mouseEvent.getSceneY();
-        if(mouseEvent.isControlDown()){
+        if (mouseEvent.isControlDown()) {
             shape.move(mouseEvent);
-        }else {
-            if(lineSelected)
-                shape=shapeFactory.createShape("line");
-            else if(rectangleSelected)
-                shape=shapeFactory.createShape("rectangle");
-            else if(circleSelected){
-                shape=shapeFactory.createShape("circle");
+        } else {
+            if (lineSelected)
+                shape = shapeFactory.createShape("line");
+            else if (rectangleSelected)
+                shape = shapeFactory.createShape("rectangle");
+            else if (circleSelected) {
+                shape = shapeFactory.createShape("circle");
             }
         }
     }
@@ -131,19 +134,20 @@ public class Controller implements DrawingEngine{
         double x1 = mouseEvent.getSceneX();
         double y1 = mouseEvent.getSceneY();
 
-        if(!mouseEvent.isControlDown()) {
+        if (!mouseEvent.isControlDown()) {
             if (lineSelected)
                 drawLine(x, y, x1, y1, shape);
             else if (brushSelected)
                 drawBrushStroke(x1, y1);
             else if (rectangleSelected)
                 drawRectangle(x, y, x1, y1, shape);
-            else if (circleSelected)
+            else if (circleSelected) {
+                shape.removeDeprecated(pane);
                 drawCircle(x, y, x1, y1);
-            else if (checkBoxEraser.isSelected())
+            } else if (checkBoxEraser.isSelected())
                 drawBrushStroke(x1, y1);
 
-            shapesList.add(shape);
+            addShape(shape);
         }
     }
 
@@ -154,25 +158,21 @@ public class Controller implements DrawingEngine{
     public void onKeyPressed(KeyEvent e) {
 
         String type = "";
-        if(e.getCode() == KeyCode.L)
-        {
+        if (e.getCode() == KeyCode.L) {
             type = "Line";
             lineSelected = true;
             rectangleSelected = false;
             circleSelected = false;
             Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
             Main.scene.setCursor(Cursor.CROSSHAIR);
-        }
-        else if (e.getCode() == KeyCode.C)
-        {
+        } else if (e.getCode() == KeyCode.C) {
             type = "Circle";
             circleSelected = true;
             rectangleSelected = false;
             lineSelected = false;
             Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
             Main.scene.setCursor(Cursor.CROSSHAIR);
-        }
-        else if(e.getCode() == KeyCode.R){
+        } else if (e.getCode() == KeyCode.R) {
             type = "Rectangle";
             circleSelected = false;
             rectangleSelected = true;
@@ -184,38 +184,38 @@ public class Controller implements DrawingEngine{
     }
     /*End of Pane Actions*/
 
-    /** Helper Method*/
-    public void drawLine(double startX, double startY, double endX, double endY, Shape shape){
-        ((sample.model.Line)shape).setStartPoint(new Point2D(startX,startY));
-        ((sample.model.Line)shape).setEndPoint(new Point2D(endX,endY));
+    /**
+     * Helper Method
+     */
+    public void drawLine(double startX, double startY, double endX, double endY, Shape shape) {
+        ((sample.model.Line) shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Line) shape).setEndPoint(new Point2D(endX, endY));
         drawShape(shape);
     }
 
     public void drawCircle(double startX, double startY, double endX, double endY) {
-        ((sample.model.Circle)shape).setStartPoint(new Point2D(startX,startY));
-        ((sample.model.Circle)shape).setEndPoint(new Point2D(endX, endY));
+        ((sample.model.Circle) shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Circle) shape).setEndPoint(new Point2D(endX, endY));
         drawShape(shape);
     }
 
-    public void drawBrushStroke(double currentX, double currentY)
-    {
+    public void drawBrushStroke(double currentX, double currentY) {
         this.brushStroke = new Circle();
 
-        if(brushSelected)
+        if (brushSelected)
             this.brushStroke.setFill(colorPicker.getValue());
-        else if(checkBoxEraser.isSelected())
+        else if (checkBoxEraser.isSelected())
             this.brushStroke.setFill(Color.WHITE);
 
-        this.brushStroke.setRadius(sliderSize.getValue()/2);
+        this.brushStroke.setRadius(sliderSize.getValue() / 2);
         this.brushStroke.setCenterX(currentX);
         this.brushStroke.setCenterY(currentY);
         pane.getChildren().add(brushStroke);
     }
 
-    public void drawRectangle(double startX, double startY, double endX, double endY, Shape shape)
-    {
-        ((sample.model.Rectangle)shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Rectangle)shape).setEndPoint(new Point2D(endX, endY));
+    public void drawRectangle(double startX, double startY, double endX, double endY, Shape shape) {
+        ((sample.model.Rectangle) shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Rectangle) shape).setEndPoint(new Point2D(endX, endY));
         drawShape(shape);
     }
 
@@ -229,7 +229,7 @@ public class Controller implements DrawingEngine{
     /*End of Helper Methods*/
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         btnBrsuh.setCursor(Cursor.HAND);
         btnLine.setCursor(Cursor.HAND);
         btnCircle.setCursor(Cursor.HAND);
@@ -248,12 +248,12 @@ public class Controller implements DrawingEngine{
 
     @Override
     public void addShape(Shape shape) {
-
+        shapesList.add(shape);
     }
 
     @Override
     public void removeShape(Shape shape) {
-
+        shapesList.remove(shape);
     }
 
     @Override

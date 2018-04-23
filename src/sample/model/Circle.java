@@ -5,12 +5,13 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import sample.controller.Controller;
 
 import java.util.Map;
 
 public class Circle extends AbstractShape {
 
-    private double diameter;
+    private double radius;
     private Point2D centerPoint;
     private Point2D startPoint;
     private Point2D endPoint;
@@ -18,16 +19,19 @@ public class Circle extends AbstractShape {
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
 
+    Pane p;
+
     public Circle(){
         this.name = "circle";
     }
 
-    public double getDiameter() {
-        return diameter;
+
+    public double getRadius() {
+        return radius;
     }
 
-    public void setDiameter(double diameter) {
-        this.diameter = diameter;
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 
     public Point2D getCenterPoint() {
@@ -106,7 +110,7 @@ public class Circle extends AbstractShape {
 
     @Override
     public void draw(Object pane) {
-        Pane p = (Pane) pane;
+        p = (Pane) pane;
         this.circle = new javafx.scene.shape.Circle();
         double diameter = Math.sqrt(Math.pow(getEndPoint().getY()-getStartPoint().getY(), 2) +
                 Math.pow(getEndPoint().getX()-getStartPoint().getX(),2));
@@ -114,12 +118,15 @@ public class Circle extends AbstractShape {
         double centerX = (getEndPoint().getX() + getStartPoint().getX()) / 2;
         this.circle.setCenterX(centerX);
         this.circle.setCenterY(centerY);
+        setCenterPoint(new Point2D(centerX, centerY));
         this.circle.setStroke(getColor());
         this.circle.setStrokeWidth(getStrokeWidth());
         this.circle.setFill(Color.TRANSPARENT);
         this.circle.setRadius(diameter/2);
+        setRadius(circle.getRadius());
         circle.setOnMousePressed(circleOnMousePressedEventHandler);
         circle.setOnMouseDragged(circleOnMouseDraggedEventHandler);
+        circle.setOnMouseReleased(circleOnMouseReleasedEventHandler);
         p.getChildren().add(circle);
     }
 
@@ -128,12 +135,13 @@ public class Circle extends AbstractShape {
         circle.getOnMousePressed();
     }
 
+    double centerX =0;
+    double centerY = 0;
+
     @Override
     public void moveDrag(MouseEvent e){
         circle.getOnMouseDragged();
-    }
-
-    private EventHandler<MouseEvent> circleOnMousePressedEventHandler =
+    }private EventHandler<MouseEvent> circleOnMousePressedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
@@ -141,8 +149,14 @@ public class Circle extends AbstractShape {
                     orgSceneY = e.getSceneY();
                     orgTranslateX = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateX();
                     orgTranslateY = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateY();
+
+                    centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX())/2;
+                    centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY())/2;
+                    System.out.println("x is " + centerX);
+                    System.out.println("y is " + centerY);
                 }
             };
+
 
     private EventHandler<MouseEvent> circleOnMouseDraggedEventHandler =
             new EventHandler<MouseEvent>() {
@@ -152,10 +166,25 @@ public class Circle extends AbstractShape {
                     double offsetY = e.getSceneY() - orgSceneY;
                     double newTranslateX = orgTranslateX + offsetX;
                     double newTranslateY = orgTranslateY + offsetY;
+
                     ((javafx.scene.shape.Circle)(e.getSource())).setTranslateX(newTranslateX);
                     ((javafx.scene.shape.Circle)(e.getSource())).setTranslateY(newTranslateY);
+
+                    centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX())/2;
+                    centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY())/2;
+                    System.out.println("x is " + centerX);
+                    System.out.println("y is " + centerY);
                 }
             };
+
+    private EventHandler<MouseEvent> circleOnMouseReleasedEventHandler =
+            e -> {
+                System.out.println("----------------------------------");
+                System.out.println(centerX);
+                System.out.println(centerY);
+            };
+
+
 
     @Override
     public void removeDeprecated(Pane pane) {
