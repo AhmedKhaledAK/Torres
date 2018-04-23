@@ -31,6 +31,7 @@ public class XMLFile implements ISaveLoadStrategy {
                         "color", aShapesList.getColor().toString()).addAttribute(
                         "strokeWidth", aShapesList.getStrokeWidth() + "").addAttribute(
                         "fillColor", aShapesList.getFillColor().toString());
+
                 if (aShapesList instanceof Line)
                 {
                     element.addAttribute("start-x",
@@ -47,13 +48,36 @@ public class XMLFile implements ISaveLoadStrategy {
                             "end-x", ((Rectangle) aShapesList).getEndPoint().getX() + "").addAttribute(
                             "end-y", ((Rectangle) aShapesList).getEndPoint().getY() + "");
                 }
+                else if (aShapesList instanceof Square)
+                {
+                    element.addAttribute("start-x",
+                            ((Square) aShapesList).getStartPoint().getX() + "").addAttribute(
+                            "start-y", ((Square) aShapesList).getStartPoint().getY() + "").addAttribute(
+                            "end-x", ((Square) aShapesList).getEndPoint().getX() + "").addAttribute(
+                            "end-y", ((Square) aShapesList).getEndPoint().getY() + "");
+                }
                 else if (aShapesList instanceof Circle)
                 {
                     element.addAttribute("start-x",
                             ((Circle) aShapesList).getStartPoint().getX() + "").addAttribute(
                             "start-y", ((Circle) aShapesList).getStartPoint().getY() + "").addAttribute(
                             "end-x", ((Circle) aShapesList).getEndPoint().getX() + "").addAttribute(
-                            "end-y", ((Circle) aShapesList).getEndPoint().getY() + "");
+                            "end-y", ((Circle) aShapesList).getEndPoint().getY() + "").addAttribute(
+                            "center-x", ((Circle) aShapesList).getCenterPoint().getX() + "").addAttribute(
+                            "center-y", ((Circle) aShapesList).getCenterPoint().getY() + "").addAttribute(
+                            "radius", ((Circle) aShapesList).getRadius() + "");
+                }
+                else if (aShapesList instanceof Ellipse)
+                {
+                    element.addAttribute("start-x",
+                            ((Ellipse) aShapesList).getStartPoint().getX() + "").addAttribute(
+                            "start-y", ((Ellipse) aShapesList).getStartPoint().getY() + "").addAttribute(
+                            "end-x", ((Ellipse) aShapesList).getEndPoint().getX() + "").addAttribute(
+                            "end-y", ((Ellipse) aShapesList).getEndPoint().getY() + "").addAttribute(
+                            "center-x", ((Ellipse) aShapesList).getCenterPoint().getX() + "").addAttribute(
+                            "center-y", ((Ellipse) aShapesList).getCenterPoint().getY() + "").addAttribute(
+                            "radius-x", ((Ellipse) aShapesList).getRadius().getX() + "").addAttribute(
+                            "radius-y", ((Ellipse) aShapesList).getRadius().getY() + "");
                 }
             }
             document.write(file);
@@ -70,7 +94,7 @@ public class XMLFile implements ISaveLoadStrategy {
     public ArrayList<Shape> load(String filepath) {
         String[] array = new String[20];
         ShapeFactory shapeFactory = new ShapeFactory();
-        Shape shape = null;
+        Shape shape;
         ArrayList<Shape> shapesList = new ArrayList<>();
         int j=0;
 
@@ -81,7 +105,6 @@ public class XMLFile implements ISaveLoadStrategy {
 
             for (Iterator<Element> it = root.elementIterator(); it.hasNext();) {
                 Element element = it.next();
-                //System.out.println(element.getName());
 
                 for (Iterator<Attribute> i = element.attributeIterator(); i.hasNext();) {
                     Attribute attribute = i.next();
@@ -106,10 +129,24 @@ public class XMLFile implements ISaveLoadStrategy {
                     ((Rectangle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
                     ((Rectangle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
                 }
+                else if(shape instanceof Square)
+                {
+                    ((Square)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
+                    ((Square)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                }
                 else if(shape instanceof Circle)
                 {
                     ((Circle)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
                     ((Circle)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                    ((Circle)shape).setCenterPoint(new Point2D(Double.parseDouble(array[8]), Double.parseDouble(array[9])));
+                    ((Circle)shape).setRadius(Double.parseDouble(array[10]));
+                }
+                else if(shape instanceof Ellipse)
+                {
+                    ((Ellipse)shape).setStartPoint(new Point2D(Double.parseDouble(array[4]), Double.parseDouble(array[5])));
+                    ((Ellipse)shape).setEndPoint(new Point2D(Double.parseDouble(array[6]), Double.parseDouble(array[7])));
+                    ((Ellipse)shape).setCenterPoint(new Point2D(Double.parseDouble(array[8]), Double.parseDouble(array[9])));
+                    ((Ellipse)shape).setRadius(new Point2D(Double.parseDouble(array[10]), Double.parseDouble(array[11])));
                 }
 
                 shapesList.add(shape);

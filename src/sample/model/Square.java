@@ -5,21 +5,20 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.w3c.dom.css.Rect;
 import sample.controller.Controller;
 
 import java.util.Map;
 
-public class Rectangle extends AbstractShape {
+public class Square extends AbstractShape {
 
     private Point2D startPoint;
     private Point2D endPoint;
-    private javafx.scene.shape.Rectangle rectangle;
+    private javafx.scene.shape.Rectangle square;
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
 
-    public Rectangle(){
-        this.name = "rectangle";
+    public Square(){
+        this.name = "square";
     }
 
     public Point2D getStartPoint() {
@@ -92,49 +91,50 @@ public class Rectangle extends AbstractShape {
     public void draw(Object pane) {
 
         Pane p = (Pane) pane;
-        rectangle = new javafx.scene.shape.Rectangle();
+        square = new javafx.scene.shape.Rectangle();
 
         if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY())
         {
-            rectangle.setHeight(getEndPoint().getY() - getStartPoint().getY());
-            rectangle.setWidth(getEndPoint().getX() - getStartPoint().getX());
-            rectangle.setX(getStartPoint().getX());
-            rectangle.setY(getStartPoint().getY());
+            square.setHeight(getEndPoint().getY() - getStartPoint().getY());
+            square.setWidth(getEndPoint().getY() - getStartPoint().getY());
+            square.setX(getStartPoint().getX());
+            square.setY(getStartPoint().getY());
         }
+
         else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
-            rectangle.setHeight(getEndPoint().getY() - getStartPoint().getY());
-            rectangle.setWidth(getStartPoint().getX() - getEndPoint().getX());
-            rectangle.setX(getEndPoint().getX());
-            rectangle.setY(getStartPoint().getY());
+            square.setHeight(getEndPoint().getY() - getStartPoint().getY());
+            square.setWidth(getStartPoint().getY() - getEndPoint().getY());
+            square.setX(getEndPoint().getX());
+            square.setY(getStartPoint().getY());
         }
-        else if(getEndPoint().getX() > getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
-            rectangle.setHeight(getStartPoint().getY() - this.getEndPoint().getY());
-            rectangle.setWidth(this.getEndPoint().getX() - this.getStartPoint().getX());
-            rectangle.setX(this.getStartPoint().getX());
-            this.rectangle.setY(this.getEndPoint().getY());
+        else if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
+            square.setHeight(getStartPoint().getY() - getEndPoint().getY());
+            square.setWidth(getEndPoint().getY() - getStartPoint().getY());
+            square.setX(getStartPoint().getX());
+            square.setY(getEndPoint().getY());
         }
-        else if(this.getEndPoint().getX() < this.getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
-            rectangle.setHeight(this.getStartPoint().getY() - this.getEndPoint().getY());
-            rectangle.setWidth(this.getStartPoint().getX() - this.getEndPoint().getX());
-            rectangle.setX(this.getEndPoint().getX());
-            rectangle.setY(this.getEndPoint().getY());
+        else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
+            square.setHeight(getStartPoint().getY() - getEndPoint().getY());
+            square.setWidth(getStartPoint().getY() - getEndPoint().getY());
+            square.setX(getEndPoint().getX());
+            square.setY(getEndPoint().getY());
         }
 
-        rectangle.setStroke(getColor());
-        rectangle.setStrokeWidth(getStrokeWidth());
-        rectangle.setFill(getFillColor());
+        square.setStroke(getColor());
+        square.setStrokeWidth(getStrokeWidth());
+        square.setFill(getFillColor());
 
-        rectangle.setOnMousePressed(rectangleOnMousePressedEventHandler);
-        rectangle.setOnMouseDragged(rectangleOnMouseDraggedEventHandler);
-        rectangle.setOnMouseReleased(rectangleOnMouseReleasedEventHandler);
+        square.setOnMousePressed(squareOnMousePressedEventHandler);
+        square.setOnMouseDragged(squareOnMouseDraggedEventHandler);
+        square.setOnMouseReleased(squareOnMouseReleasedEventHandler);
 
-        p.getChildren().add(rectangle);
+        p.getChildren().add(square);
 
     }
 
     @Override
     public void move(MouseEvent e) {
-        rectangle.getOnMousePressed();
+        square.getOnMousePressed();
     }
 
     double startX = 0;
@@ -144,10 +144,10 @@ public class Rectangle extends AbstractShape {
 
     @Override
     public void moveDrag(MouseEvent e){
-        rectangle.getOnMouseDragged();
+        square.getOnMouseDragged();
     }
 
-    private EventHandler<MouseEvent> rectangleOnMousePressedEventHandler =
+    private EventHandler<MouseEvent> squareOnMousePressedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
@@ -156,16 +156,16 @@ public class Rectangle extends AbstractShape {
                     orgTranslateX = ((javafx.scene.shape.Rectangle) (e.getSource())).getTranslateX();
                     orgTranslateY = ((javafx.scene.shape.Rectangle) (e.getSource())).getTranslateY();
 
-                    startPoint = new Point2D(rectangle.getBoundsInParent().getMinX(),
-                            rectangle.getBoundsInParent().getMaxY());
+                    startPoint = new Point2D(square.getBoundsInParent().getMinX(),
+                            square.getBoundsInParent().getMaxY());
 
-                    endPoint = new Point2D(rectangle.getBoundsInParent().getMaxX(),
-                            rectangle.getBoundsInParent().getMinY());
+                    endPoint = new Point2D(square.getBoundsInParent().getMaxX(),
+                            square.getBoundsInParent().getMinY());
                 }
             };
 
 
-    private EventHandler<MouseEvent> rectangleOnMouseDraggedEventHandler =
+    private EventHandler<MouseEvent> squareOnMouseDraggedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
@@ -177,27 +177,27 @@ public class Rectangle extends AbstractShape {
                     ((javafx.scene.shape.Rectangle)(e.getSource())).setTranslateX(newTranslateX);
                     ((javafx.scene.shape.Rectangle)(e.getSource())).setTranslateY(newTranslateY);
 
-                    startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth();
-                    startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth();
+                    startX = square.getBoundsInParent().getMinX() + getStrokeWidth();
+                    startY = square.getBoundsInParent().getMaxY() - getStrokeWidth();
 
-                    endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth();
-                    endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth();
+                    endX = square.getBoundsInParent().getMaxX() - getStrokeWidth();
+                    endY = square.getBoundsInParent().getMinY() + getStrokeWidth();
                 }
             };
 
-    private EventHandler<MouseEvent> rectangleOnMouseReleasedEventHandler =
+    private EventHandler<MouseEvent> squareOnMouseReleasedEventHandler =
             e -> {
                 System.out.println("----------------------------------");
 
                 for(Shape shape : Controller.shapesList){
-                    if(shape instanceof Rectangle){
-                        if(((Rectangle)shape).getStartPoint().getX() == startPoint.getX() &&
-                                ((Rectangle)shape).getStartPoint().getY() == startPoint.getY() &&
-                                ((Rectangle)shape).getEndPoint().getX() == endPoint.getX() &&
-                                ((Rectangle)shape).getEndPoint().getY() == endPoint.getY()){
+                    if(shape instanceof Square){
+                        if(((Square)shape).getStartPoint().getX() == startPoint.getX() &&
+                                ((Square)shape).getStartPoint().getY() == startPoint.getY() &&
+                                ((Square)shape).getEndPoint().getX() == endPoint.getX() &&
+                                ((Square)shape).getEndPoint().getY() == endPoint.getY()){
 
-                            ((Rectangle)shape).setStartPoint(new Point2D(startX, startY));
-                            ((Rectangle)shape).setEndPoint(new Point2D(endX, endY));
+                            ((Square)shape).setStartPoint(new Point2D(startX, startY));
+                            ((Square)shape).setEndPoint(new Point2D(endX, endY));
 
                             System.out.println("found");
                             break;
@@ -208,10 +208,9 @@ public class Rectangle extends AbstractShape {
             };
 
 
-
     @Override
     public void removeDeprecated(Pane pane) {
-        pane.getChildren().remove(rectangle);
+        pane.getChildren().remove(square);
 
     }
 }

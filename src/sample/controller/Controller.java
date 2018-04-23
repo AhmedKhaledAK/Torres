@@ -15,14 +15,14 @@ import sample.files.FileClass;
 import sample.lang.Lang;
 import sample.model.Shape;
 import sample.model.ShapeFactory;
-import sample.view.Main;
+import sample.Main;
 
 import java.util.ArrayList;
 
 public class Controller implements DrawingEngine {
 
     @FXML
-    public Button btnBrsuh, btnLine, btnRect, btnCircle, btnSave, btnLoad;
+    public Button btnBrsuh, btnLine, btnRect, btnCircle, btnSquare, btnSave, btnLoad;
     @FXML
     public Label lblCoordinates;
     @FXML
@@ -41,6 +41,9 @@ public class Controller implements DrawingEngine {
     private boolean lineSelected = false;
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
+    private boolean squareSelected = false;
+    private boolean ellipseSelected = false;
+
 
     public static ArrayList<Shape> shapesList = new ArrayList<>();
 
@@ -71,6 +74,15 @@ public class Controller implements DrawingEngine {
         rectangleSelected ^= true;
         Main.scene.setCursor(Cursor.CROSSHAIR);
     }
+    public void onBtnSquareClick(ActionEvent actionEvent) {
+        squareSelected ^= true;
+        Main.scene.setCursor(Cursor.CROSSHAIR);
+    }
+    public void onBtnEllipseClick(ActionEvent actionEvent) {
+        ellipseSelected ^= true;
+        Main.scene.setCursor(Cursor.CROSSHAIR);
+
+    }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
         FileClass fileClass = new FileClass();
@@ -90,12 +102,31 @@ public class Controller implements DrawingEngine {
      * Pane Actions
      */
 
+    public void onMousePressed(MouseEvent mouseEvent) {
+        x = mouseEvent.getSceneX();
+        y = mouseEvent.getSceneY();
+        if (mouseEvent.isControlDown()) {
+            shape.move(mouseEvent);
+        } else {
+            if (lineSelected)
+                shape = shapeFactory.createShape("line");
+            else if (rectangleSelected)
+                shape = shapeFactory.createShape("rectangle");
+            else if (circleSelected)
+                shape = shapeFactory.createShape("circle");
+            else if (squareSelected)
+                shape = shapeFactory.createShape("square");
+            else if(ellipseSelected)
+                shape = shapeFactory.createShape("ellipse");
+        }
+    }
+
     public void onMouseDragged(MouseEvent mouseEvent) {
         double x1 = mouseEvent.getSceneX();
         double y1 = mouseEvent.getSceneY();
 
         if (mouseEvent.isControlDown()) {
-            //shape.moveDrag(mouseEvent);
+            shape.moveDrag(mouseEvent);
 
         } else {
             if (lineSelected) {
@@ -107,26 +138,16 @@ public class Controller implements DrawingEngine {
             } else if (circleSelected) {
                 shape.removeDeprecated(pane);
                 drawCircle(x, y, x1, y1);
-            } else if (brushSelected)
+            } else if(squareSelected) {
+                shape.removeDeprecated(pane);
+                drawSquare(x, y, x1, y1);
+            } else if(ellipseSelected) {
+                shape.removeDeprecated(pane);
+                drawEllipse(x, y, x1, y1);
+            }else if (brushSelected)
                 drawBrushStroke(x1, y1);
             else if (checkBoxEraser.isSelected())
                 drawBrushStroke(x1, y1);
-        }
-    }
-
-    public void onMousePressed(MouseEvent mouseEvent) {
-        x = mouseEvent.getSceneX();
-        y = mouseEvent.getSceneY();
-        if (mouseEvent.isControlDown()) {
-            shape.move(mouseEvent);
-        } else {
-            if (lineSelected)
-                shape = shapeFactory.createShape("line");
-            else if (rectangleSelected)
-                shape = shapeFactory.createShape("rectangle");
-            else if (circleSelected) {
-                shape = shapeFactory.createShape("circle");
-            }
         }
     }
 
@@ -135,16 +156,24 @@ public class Controller implements DrawingEngine {
         double y1 = mouseEvent.getSceneY();
 
         if (!mouseEvent.isControlDown()) {
-            if (lineSelected)
+            if (lineSelected) {
+                shape.removeDeprecated(pane);
                 drawLine(x, y, x1, y1, shape);
-            else if (brushSelected)
+            } else if (brushSelected)
                 drawBrushStroke(x1, y1);
-            else if (rectangleSelected)
+            else if (rectangleSelected) {
+                shape.removeDeprecated(pane);
                 drawRectangle(x, y, x1, y1, shape);
-            else if (circleSelected) {
+            } else if (circleSelected) {
                 shape.removeDeprecated(pane);
                 drawCircle(x, y, x1, y1);
-            } else if (checkBoxEraser.isSelected())
+            } else if(squareSelected) {
+                shape.removeDeprecated(pane);
+                drawSquare(x, y, x1, y1);
+            } else if(ellipseSelected){
+                shape.removeDeprecated(pane);
+                drawEllipse(x,y,x1,y1);
+            }else if (checkBoxEraser.isSelected())
                 drawBrushStroke(x1, y1);
 
             addShape(shape);
@@ -163,6 +192,7 @@ public class Controller implements DrawingEngine {
             lineSelected = true;
             rectangleSelected = false;
             circleSelected = false;
+            squareSelected = false;
             Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
             Main.scene.setCursor(Cursor.CROSSHAIR);
         } else if (e.getCode() == KeyCode.C) {
@@ -170,6 +200,7 @@ public class Controller implements DrawingEngine {
             circleSelected = true;
             rectangleSelected = false;
             lineSelected = false;
+            squareSelected = false;
             Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
             Main.scene.setCursor(Cursor.CROSSHAIR);
         } else if (e.getCode() == KeyCode.R) {
@@ -177,6 +208,16 @@ public class Controller implements DrawingEngine {
             circleSelected = false;
             rectangleSelected = true;
             lineSelected = false;
+            squareSelected = false;
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
+            Main.scene.setCursor(Cursor.CROSSHAIR);
+        }else if (e.getCode() == KeyCode.S) {
+            type = "Square";
+            squareSelected = true;
+            circleSelected = false;
+            rectangleSelected = false;
+            lineSelected = false;
+            squareSelected = false;
             Lang.showDiag(Alert.AlertType.INFORMATION, "Info", type, type + " is selected, you can draw it now.");
             Main.scene.setCursor(Cursor.CROSSHAIR);
         }
@@ -198,6 +239,19 @@ public class Controller implements DrawingEngine {
         ((sample.model.Circle) shape).setEndPoint(new Point2D(endX, endY));
         drawShape(shape);
     }
+
+    public void drawSquare(double startX, double startY, double endX, double endY) {
+        ((sample.model.Square) shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Square) shape).setEndPoint(new Point2D(endX, endY));
+        drawShape(shape);
+    }
+
+    private void drawEllipse(double startX, double startY, double endX, double endY) {
+        ((sample.model.Ellipse) shape).setStartPoint(new Point2D(startX, startY));
+        ((sample.model.Ellipse) shape).setEndPoint(new Point2D(endX, endY));
+        drawShape(shape);
+    }
+
 
     public void drawBrushStroke(double currentX, double currentY) {
         this.brushStroke = new Circle();
@@ -233,6 +287,7 @@ public class Controller implements DrawingEngine {
         btnBrsuh.setCursor(Cursor.HAND);
         btnLine.setCursor(Cursor.HAND);
         btnCircle.setCursor(Cursor.HAND);
+        btnSquare.setCursor(Cursor.HAND);
         btnLoad.setCursor(Cursor.HAND);
         btnRect.setCursor(Cursor.HAND);
         btnSave.setCursor(Cursor.HAND);
@@ -285,4 +340,5 @@ public class Controller implements DrawingEngine {
     public void load(String path) {
 
     }
+
 }

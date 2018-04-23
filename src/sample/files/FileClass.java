@@ -1,7 +1,7 @@
 package sample.files;
 
 import javafx.stage.FileChooser;
-import sample.view.Main;
+import sample.Main;
 import sample.model.ISaveLoadStrategy;
 import sample.model.Shape;
 import java.io.File;

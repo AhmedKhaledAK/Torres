@@ -40,7 +40,15 @@ public class JSONFile implements ISaveLoadStrategy {
                     jsonObject.put("start-y", ((Rectangle)shapesList.get(i)).getStartPoint().getY());
                     jsonObject.put("end-x", ((Rectangle)shapesList.get(i)).getEndPoint().getX());
                     jsonObject.put("end-y", ((Rectangle)shapesList.get(i)).getEndPoint().getY());
-                }else if(shapesList.get(i) instanceof Circle)
+                }
+                else if(shapesList.get(i) instanceof Square)
+                {
+                    jsonObject.put("start-x", ((Square)shapesList.get(i)).getStartPoint().getX());
+                    jsonObject.put("start-y", ((Square)shapesList.get(i)).getStartPoint().getY());
+                    jsonObject.put("end-x", ((Square)shapesList.get(i)).getEndPoint().getX());
+                    jsonObject.put("end-y", ((Square)shapesList.get(i)).getEndPoint().getY());
+                }
+                else if(shapesList.get(i) instanceof Circle)
                 {
                     jsonObject.put("start-x", ((Circle)shapesList.get(i)).getStartPoint().getX());
                     jsonObject.put("start-y", ((Circle)shapesList.get(i)).getStartPoint().getY());
@@ -50,12 +58,24 @@ public class JSONFile implements ISaveLoadStrategy {
                     jsonObject.put("center-y",((Circle)shapesList.get(i)).getCenterPoint().getY());
                     jsonObject.put("radius",((Circle)shapesList.get(i)).getRadius());
                 }
+                else if(shapesList.get(i) instanceof Ellipse)
+                {
+                    jsonObject.put("start-x", ((Ellipse)shapesList.get(i)).getStartPoint().getX());
+                    jsonObject.put("start-y", ((Ellipse)shapesList.get(i)).getStartPoint().getY());
+                    jsonObject.put("end-x", ((Ellipse)shapesList.get(i)).getEndPoint().getX());
+                    jsonObject.put("end-y", ((Ellipse)shapesList.get(i)).getEndPoint().getY());
+                    jsonObject.put("center-x", ((Ellipse)shapesList.get(i)).getCenterPoint().getY());
+                    jsonObject.put("center-y",((Ellipse)shapesList.get(i)).getCenterPoint().getY());
+                    jsonObject.put("radius-x",((Ellipse)shapesList.get(i)).getRadius().getX());
+                    jsonObject.put("radius-y",((Ellipse)shapesList.get(i)).getRadius().getY());
+                }
 
                 list.add(jsonObject);
             }
             list.writeJSONString(file);
             file.flush();
             file.close();
+
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -75,6 +95,8 @@ public class JSONFile implements ISaveLoadStrategy {
         double centerX = 0;
         double centerY = 0;
         double radius = 0;
+        double radiusX = 0;
+        double radiusY = 0;
         try
         {
             JSONArray array = (JSONArray) parser.parse(new FileReader(filepath));
@@ -85,7 +107,7 @@ public class JSONFile implements ISaveLoadStrategy {
                 String fillColor = (String) jsonObject.get("fillColor");
                 double strokeWidth = (Double) jsonObject.get("strokeWidth");
 
-                if(name.equals("line") || name.equals("rectangle"))
+                if(name.equals("line") || name.equals("rectangle") || name.equals("square"))
                 {
                     startX = (Double) jsonObject.get("start-x");
                     startY = (Double) jsonObject.get("start-y");
@@ -101,6 +123,17 @@ public class JSONFile implements ISaveLoadStrategy {
                     centerY = (Double) jsonObject.get("center-y");
                     radius = (Double) jsonObject.get("radius");
                 }
+                else if(name.equals("ellipse")){
+                    startX = (Double) jsonObject.get("start-x");
+                    startY = (Double) jsonObject.get("start-y");
+                    endX = (Double) jsonObject.get("end-x");
+                    endY = (Double) jsonObject.get("end-y");
+                    centerX = (Double) jsonObject.get("center-x");
+                    centerY = (Double) jsonObject.get("center-y");
+                    radiusX = (Double) jsonObject.get("radius-x");
+                    radiusY = (Double) jsonObject.get("radius-y");
+                }
+
                 shape = shapeFactory.createShape(name);
                 shape.setColor(Color.web(color));
                 shape.setFillColor(Color.web(fillColor));
@@ -118,11 +151,21 @@ public class JSONFile implements ISaveLoadStrategy {
                         ((Rectangle) shape).setStartPoint(new Point2D(startX, startY));
                         ((Rectangle) shape).setEndPoint(new Point2D(endX, endY));
                         break;
+                    case "square":
+                        ((Square) shape).setStartPoint(new Point2D(startX, startY));
+                        ((Square) shape).setEndPoint(new Point2D(endX, endY));
+                        break;
                     case "circle":
                         ((Circle) shape).setStartPoint(new Point2D(startX, startY));
                         ((Circle) shape).setEndPoint(new Point2D(endX, endY));
                         ((Circle) shape).setCenterPoint(new Point2D(centerX, centerY));
                         ((Circle) shape).setRadius(radius);
+                        break;
+                    case "ellipse":
+                        ((Ellipse) shape).setStartPoint(new Point2D(startX, startY));
+                        ((Ellipse) shape).setEndPoint(new Point2D(endX, endY));
+                        ((Ellipse) shape).setCenterPoint(new Point2D(centerX, centerY));
+                        ((Ellipse) shape).setRadius(new Point2D(radiusX,radiusY));
                         break;
                 }
                 System.out.println(((AbstractShape) shape).getName() + " " +

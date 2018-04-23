@@ -10,6 +10,10 @@ public class ShapeFactory {
                 return new Rectangle();
             case "circle":
                 return new Circle();
+            case "square":
+                return new Square();
+            case "ellipse":
+                return new Ellipse();
         }
         return null;
     }

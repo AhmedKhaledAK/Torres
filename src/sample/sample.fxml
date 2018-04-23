@@ -9,28 +9,23 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      onKeyPressed="#onKeyPressed"
-      onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased"
-      prefHeight="525.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="sample.controller.Controller">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="525.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
    <children>
-      <VBox layoutX="-2.0" prefHeight="496.0" prefWidth="811.0">
+      <VBox layoutX="5.0" prefHeight="496.0" prefWidth="811.0">
          <children>
                   <HBox prefHeight="41.0" prefWidth="811.0">
                      <children>
-                        <Button fx:id="btnBrsuh" mnemonicParsing="false" onAction="#onBtnBrushClick"
-                                prefHeight="39.0" prefWidth="87.0" text="Brush" />
+                        <Button fx:id="btnBrsuh" mnemonicParsing="false" onAction="#onBtnBrushClick" prefHeight="39.0" prefWidth="87.0" text="Brush" />
                         <ColorPicker id="colorPicker" fx:id="colorPicker" prefHeight="39.0" prefWidth="112.0" />
-                        <Slider fx:id="sliderSize" majorTickUnit="10.0" max="50.0" minorTickCount="5"
-                                showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderSize" majorTickUnit="10.0" max="50.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" />
                         <CheckBox fx:id="checkBoxEraser" mnemonicParsing="false" prefHeight="38.0" prefWidth="67.0" text="Eraser" />
                         <Button fx:id="btnLine" mnemonicParsing="false" onAction="#onBtnLineClick" text="Line" />
                          <Button fx:id="btnCircle" mnemonicParsing="false" onAction="#onBtnCircleClick" text="Circle" />
-                         <Button fx:id="btnRect" mnemonicParsing="false" onAction="#onBtnRectClick"
-                                 prefHeight="18.0" prefWidth="88.0" text="Rectangle" />
+                         <Button fx:id="btnRect" mnemonicParsing="false" onAction="#onBtnRectClick" prefHeight="25.0" prefWidth="71.0" text="Rectangle" />
+                  <Button fx:id="btnSquare" mnemonicParsing="false" onAction="#onBtnSquareClick" prefHeight="25.0" prefWidth="57.0" text="Square" />
                         <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onBtnSaveClick" text="Save" />
                         <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onBtnLoadClick" text="Load" />
+                  <Button fx:id="btnEllipse" mnemonicParsing="false" onAction="#onBtnEllipseClick" prefHeight="18.0" prefWidth="88.0" text="Ellipse" />
                      </children>
                   </HBox>
          </children>
