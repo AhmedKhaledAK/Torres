@@ -151,14 +151,23 @@ public class Ellipse extends AbstractShape {
     }
 
     @Override
-    public void move(MouseEvent e) {
-        System.out.println("in mouse move");
+    public void movePress(MouseEvent e) {
+
+    }
+
+    @Override
+    public void removeShape(MouseEvent e) {
 
     }
 
     @Override
     public void moveDrag(MouseEvent e) {
         System.out.println("in mouse drag");
+
+    }
+
+    @Override
+    public void moveRelease(MouseEvent e) {
 
     }
 
@@ -214,4 +223,5 @@ public class Ellipse extends AbstractShape {
     public void removeDeprecated(Pane pane) {
         pane.getChildren().remove(ellipse);
     }
+
 }

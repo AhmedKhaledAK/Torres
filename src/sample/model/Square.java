@@ -96,26 +96,26 @@ public class Square extends AbstractShape {
         if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY())
         {
             square.setHeight(getEndPoint().getY() - getStartPoint().getY());
-            square.setWidth(getEndPoint().getY() - getStartPoint().getY());
+            square.setWidth(square.getHeight());
             square.setX(getStartPoint().getX());
             square.setY(getStartPoint().getY());
         }
 
         else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
             square.setHeight(getEndPoint().getY() - getStartPoint().getY());
-            square.setWidth(getStartPoint().getY() - getEndPoint().getY());
+            square.setWidth(square.getHeight());
             square.setX(getEndPoint().getX());
             square.setY(getStartPoint().getY());
         }
         else if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
             square.setHeight(getStartPoint().getY() - getEndPoint().getY());
-            square.setWidth(getEndPoint().getY() - getStartPoint().getY());
+            square.setWidth(square.getHeight());
             square.setX(getStartPoint().getX());
             square.setY(getEndPoint().getY());
         }
         else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
             square.setHeight(getStartPoint().getY() - getEndPoint().getY());
-            square.setWidth(getStartPoint().getY() - getEndPoint().getY());
+            square.setWidth(square.getHeight());
             square.setX(getEndPoint().getX());
             square.setY(getEndPoint().getY());
         }
@@ -133,8 +133,13 @@ public class Square extends AbstractShape {
     }
 
     @Override
-    public void move(MouseEvent e) {
-        square.getOnMousePressed();
+    public void movePress(MouseEvent e) {
+
+    }
+
+    @Override
+    public void removeShape(MouseEvent e) {
+
     }
 
     double startX = 0;
@@ -145,6 +150,11 @@ public class Square extends AbstractShape {
     @Override
     public void moveDrag(MouseEvent e){
         square.getOnMouseDragged();
+    }
+
+    @Override
+    public void moveRelease(MouseEvent e) {
+
     }
 
     private EventHandler<MouseEvent> squareOnMousePressedEventHandler =
@@ -213,4 +223,5 @@ public class Square extends AbstractShape {
         pane.getChildren().remove(square);
 
     }
+
 }

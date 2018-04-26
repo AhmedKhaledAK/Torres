@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.AmbientLight?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ColorPicker?>
@@ -9,27 +10,32 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="525.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="649.0" prefWidth="935.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
    <children>
-      <VBox layoutX="5.0" prefHeight="496.0" prefWidth="811.0">
+      <VBox layoutX="5.0" prefHeight="649.0" prefWidth="935.0">
          <children>
-                  <HBox prefHeight="41.0" prefWidth="811.0">
-                     <children>
-                        <Button fx:id="btnBrsuh" mnemonicParsing="false" onAction="#onBtnBrushClick" prefHeight="39.0" prefWidth="87.0" text="Brush" />
-                        <ColorPicker id="colorPicker" fx:id="colorPicker" prefHeight="39.0" prefWidth="112.0" />
-                        <Slider fx:id="sliderSize" majorTickUnit="10.0" max="50.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" />
-                        <CheckBox fx:id="checkBoxEraser" mnemonicParsing="false" prefHeight="38.0" prefWidth="67.0" text="Eraser" />
-                        <Button fx:id="btnLine" mnemonicParsing="false" onAction="#onBtnLineClick" text="Line" />
-                         <Button fx:id="btnCircle" mnemonicParsing="false" onAction="#onBtnCircleClick" text="Circle" />
-                         <Button fx:id="btnRect" mnemonicParsing="false" onAction="#onBtnRectClick" prefHeight="25.0" prefWidth="71.0" text="Rectangle" />
+            <HBox prefHeight="41.0" prefWidth="811.0">
+               <children>
+                  <ColorPicker id="colorPicker" fx:id="colorPicker" prefHeight="30.0" prefWidth="89.0" />
+                  <Slider fx:id="sliderSize" majorTickUnit="10.0" max="50.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" />
+                  <CheckBox fx:id="checkBoxEraser" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Eraser" />
+                  <Button fx:id="btnBrush" mnemonicParsing="false" onAction="#onBtnBrushClick" prefHeight="25.0" prefWidth="49.0" text="Brush" />
+                  <Button fx:id="btnLine" mnemonicParsing="false" onAction="#onBtnLineClick" text="Line" />
+                  <Button fx:id="btnCircle" mnemonicParsing="false" onAction="#onBtnCircleClick" text="Circle" />
+                  <Button fx:id="btnRect" mnemonicParsing="false" onAction="#onBtnRectClick" prefHeight="25.0" prefWidth="71.0" text="Rectangle" />
                   <Button fx:id="btnSquare" mnemonicParsing="false" onAction="#onBtnSquareClick" prefHeight="25.0" prefWidth="57.0" text="Square" />
-                        <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onBtnSaveClick" text="Save" />
-                        <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onBtnLoadClick" text="Load" />
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onBtnSaveClick" text="Save" />
+                  <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onBtnLoadClick" text="Load" />
                   <Button fx:id="btnEllipse" mnemonicParsing="false" onAction="#onBtnEllipseClick" prefHeight="18.0" prefWidth="88.0" text="Ellipse" />
-                     </children>
-                  </HBox>
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onBtnDeleteClick" prefHeight="18.0" prefWidth="88.0" text="Delete" />
+                  <Button mnemonicParsing="false" onMouseClicked="#onBtnResizeClick" text="Resize" />
+                  <Button fx:id="btnUndp" mnemonicParsing="false" onMouseClicked="#onBtnUndoClick" text="Undo" />
+                  <Button fx:id="btnRedo" mnemonicParsing="false" onMouseClicked="#onBtnRedoClick" text="Redo" />
+               </children>
+            </HBox>
          </children>
       </VBox>
-      <Label fx:id="lblCoordinates" layoutX="14.0" layoutY="494.0" prefHeight="17.0" prefWidth="174.0" text="Label" />
+      <Label fx:id="lblCoordinates" layoutX="14.0" layoutY="620.0" prefHeight="17.0" prefWidth="174.0" text="" />
+      <AmbientLight color="CHARTREUSE" lightOn="true" />
    </children>
 </Pane>

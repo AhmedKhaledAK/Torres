@@ -1,6 +1,7 @@
 package sample.controller;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
 import sample.model.Shape;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 public interface DrawingEngine {
     void refresh(Object pane);
     void addShape(Shape shape);
-    void removeShape(Shape shape);
+    void removeShape(MouseEvent event);
     void updateShape(Shape oldShape, Shape newShape);
     ArrayList<Shape> getShapes();
     void undo();

@@ -2,11 +2,14 @@ package sample.model;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.w3c.dom.css.Rect;
+
 import sample.controller.Controller;
+import sample.lang.Lang;
 
 import java.util.Map;
 
@@ -15,10 +18,15 @@ public class Rectangle extends AbstractShape {
     private Point2D startPoint;
     private Point2D endPoint;
     private javafx.scene.shape.Rectangle rectangle;
-    private double orgSceneX, orgSceneY;
+    private double orgSceneX, orgSceneY, originalX, originalY;
     private double orgTranslateX, orgTranslateY;
+    double startX = 0;
+    double startY = 0;
+    double endX = 0;
+    double endY = 0;
+    Pane p;
 
-    public Rectangle(){
+    public Rectangle() {
         this.name = "rectangle";
     }
 
@@ -91,29 +99,26 @@ public class Rectangle extends AbstractShape {
     @Override
     public void draw(Object pane) {
 
-        Pane p = (Pane) pane;
+        p = (Pane) pane;
         rectangle = new javafx.scene.shape.Rectangle();
 
-        if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY())
-        {
+        if (getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
             rectangle.setHeight(getEndPoint().getY() - getStartPoint().getY());
             rectangle.setWidth(getEndPoint().getX() - getStartPoint().getX());
             rectangle.setX(getStartPoint().getX());
             rectangle.setY(getStartPoint().getY());
-        }
-        else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
+        } else if (getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
             rectangle.setHeight(getEndPoint().getY() - getStartPoint().getY());
             rectangle.setWidth(getStartPoint().getX() - getEndPoint().getX());
             rectangle.setX(getEndPoint().getX());
             rectangle.setY(getStartPoint().getY());
-        }
-        else if(getEndPoint().getX() > getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
+        } else if (getEndPoint().getX() > getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
             rectangle.setHeight(getStartPoint().getY() - this.getEndPoint().getY());
             rectangle.setWidth(this.getEndPoint().getX() - this.getStartPoint().getX());
             rectangle.setX(this.getStartPoint().getX());
             this.rectangle.setY(this.getEndPoint().getY());
-        }
-        else if(this.getEndPoint().getX() < this.getStartPoint().getX() && this.getEndPoint().getY() < this.getStartPoint().getY()) {
+        } else if (this.getEndPoint().getX() < this.getStartPoint().getX()
+                && this.getEndPoint().getY() < this.getStartPoint().getY()) {
             rectangle.setHeight(this.getStartPoint().getY() - this.getEndPoint().getY());
             rectangle.setWidth(this.getStartPoint().getX() - this.getEndPoint().getX());
             rectangle.setX(this.getEndPoint().getX());
@@ -127,86 +132,179 @@ public class Rectangle extends AbstractShape {
         rectangle.setOnMousePressed(rectangleOnMousePressedEventHandler);
         rectangle.setOnMouseDragged(rectangleOnMouseDraggedEventHandler);
         rectangle.setOnMouseReleased(rectangleOnMouseReleasedEventHandler);
-
+        rectangle.setOnMouseClicked(rectangleOnMouseClickedEventHandler);
+//        rectangle.setOnMouseMoved(rectangleOnMouseMovedEventHandler);
         p.getChildren().add(rectangle);
-
     }
 
     @Override
-    public void move(MouseEvent e) {
-        rectangle.getOnMousePressed();
-    }
+    public void movePress(MouseEvent e) {
+        if(Controller.resizeSelected)
+        {
+            originalX = rectangle.getX() + rectangle.getWidth();
+            originalY = rectangle.getY() + rectangle.getHeight();
+        }
+        else {
 
-    double startX = 0;
-    double startY = 0;
-    double endX = 0;
-    double endY = 0;
+            orgSceneX = e.getSceneX();
+            orgSceneY = e.getSceneY();
+            orgTranslateX = ((javafx.scene.shape.Rectangle) (e.getTarget())).getTranslateX();
+            orgTranslateY = ((javafx.scene.shape.Rectangle) (e.getTarget())).getTranslateY();
+        }
+
+        startPoint = new Point2D(rectangle.getBoundsInParent().getMinX(),
+                rectangle.getBoundsInParent().getMaxY());
+
+        endPoint = new Point2D(rectangle.getBoundsInParent().getMaxX(),
+                rectangle.getBoundsInParent().getMinY());
+    }
 
     @Override
-    public void moveDrag(MouseEvent e){
-        rectangle.getOnMouseDragged();
+    public void moveDrag(MouseEvent e) {
+        if(Controller.resizeSelected)
+        {
+            double deltaX = e.getSceneX() - originalX;
+            double deltaY = e.getSceneY() - originalY;
+
+            rectangle.setHeight(rectangle.getHeight() + deltaY);
+            rectangle.setWidth(rectangle.getWidth() + deltaX);
+
+            originalX = rectangle.getX() + rectangle.getWidth();
+            originalY = rectangle.getY() + rectangle.getHeight();
+
+
+        }
+        else
+        {
+            double offsetX = e.getSceneX() - orgSceneX;
+            double offsetY = e.getSceneY() - orgSceneY;
+            double newTranslateX = orgTranslateX + offsetX;
+            double newTranslateY = orgTranslateY + offsetY;
+
+            ((javafx.scene.shape.Rectangle) (e.getTarget())).setTranslateX(newTranslateX);
+            ((javafx.scene.shape.Rectangle) (e.getTarget())).setTranslateY(newTranslateY);
+
+            startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
+            startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
+
+        }
+
+        endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
+        endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
     }
+
+    @Override
+    public void moveRelease(MouseEvent e) {
+        int index = searchForRectangle();
+        if(Controller.resizeSelected){
+            ((Rectangle) Controller.shapesList.get(index)).setEndPoint(new Point2D(originalX, originalY));
+            ((Rectangle) Controller.shapesList.get(index)).setStartPoint(new Point2D(rectangle.getX(), rectangle.getY()));
+        }
+        else {
+            ((Rectangle) Controller.shapesList.get(index)).setStartPoint(new Point2D(startX, startY));
+            ((Rectangle) Controller.shapesList.get(index)).setEndPoint(new Point2D(endX, endY));
+        }
+    }
+
+    @Override
+    public void removeShape(MouseEvent e) {
+
+        int index = searchForRectangle();
+        System.out.println("index is " + index);
+
+
+        if(Controller.shapesList.size()==0)
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error", "Cannot Delete",
+                    "There is nothing to delete");
+        else
+        {
+            p.getChildren().remove(rectangle);
+            Controller.shapesList.remove(index);
+
+        }
+
+    }
+
+//    private EventHandler<MouseEvent> rectangleOnMouseMovedEventHandler =
+//            new EventHandler<MouseEvent>() {
+//                @Override
+//                public void handle(MouseEvent e) {
+//                    if(e.getSceneX()>=rectangle.getX() && e.getSceneX()<=rectangle.getX()+rectangle.getStrokeWidth())
+//                        Main.scene.setCursor(Cursor.W_RESIZE);
+//
+//                    else if(e.getSceneX()<=rectangle.getX()+rectangle.getWidth() &&
+//                            e.getSceneX()>=rectangle.getX()+ rectangle.getWidth()-rectangle.getStrokeWidth())
+//                        Main.scene.setCursor(Cursor.E_RESIZE);
+//
+//                    else if(e.getSceneY()>=rectangle.getY() && e.getSceneY()<rectangle.getY()-rectangle.getStrokeWidth())
+//                        Main.scene.setCursor(Cursor.N_RESIZE);
+//
+//                    else if(e.getSceneY()<=rectangle.getY() - rectangle.getHeight() &&
+//                            e.getSceneY()>rectangle.getY() - rectangle.getHeight() +rectangle.getStrokeWidth())
+//                        Main.scene.setCursor(Cursor.S_RESIZE);
+//
+//                    else
+//                        Main.scene.setCursor(Cursor.DEFAULT);
+//
+//
+//                }
+//            };
+
+
+    private EventHandler<MouseEvent> rectangleOnMouseClickedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    rectangle = (javafx.scene.shape.Rectangle) (e.getTarget());
+
+                    startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
+                    startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
+
+                    endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
+                    endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
+
+                    if(Controller.deleteSelected || Controller.undoSelected)
+                        removeShape(e);
+                }
+            };
 
     private EventHandler<MouseEvent> rectangleOnMousePressedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    orgSceneX = e.getSceneX();
-                    orgSceneY = e.getSceneY();
-                    orgTranslateX = ((javafx.scene.shape.Rectangle) (e.getSource())).getTranslateX();
-                    orgTranslateY = ((javafx.scene.shape.Rectangle) (e.getSource())).getTranslateY();
-
-                    startPoint = new Point2D(rectangle.getBoundsInParent().getMinX(),
-                            rectangle.getBoundsInParent().getMaxY());
-
-                    endPoint = new Point2D(rectangle.getBoundsInParent().getMaxX(),
-                            rectangle.getBoundsInParent().getMinY());
+                    movePress(e);
                 }
             };
-
 
     private EventHandler<MouseEvent> rectangleOnMouseDraggedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    double offsetX = e.getSceneX() - orgSceneX;
-                    double offsetY = e.getSceneY() - orgSceneY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
 
-                    ((javafx.scene.shape.Rectangle)(e.getSource())).setTranslateX(newTranslateX);
-                    ((javafx.scene.shape.Rectangle)(e.getSource())).setTranslateY(newTranslateY);
+                    moveDrag(e);
 
-                    startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth();
-                    startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth();
-
-                    endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth();
-                    endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth();
                 }
             };
 
     private EventHandler<MouseEvent> rectangleOnMouseReleasedEventHandler =
             e -> {
-                System.out.println("----------------------------------");
-
-                for(Shape shape : Controller.shapesList){
-                    if(shape instanceof Rectangle){
-                        if(((Rectangle)shape).getStartPoint().getX() == startPoint.getX() &&
-                                ((Rectangle)shape).getStartPoint().getY() == startPoint.getY() &&
-                                ((Rectangle)shape).getEndPoint().getX() == endPoint.getX() &&
-                                ((Rectangle)shape).getEndPoint().getY() == endPoint.getY()){
-
-                            ((Rectangle)shape).setStartPoint(new Point2D(startX, startY));
-                            ((Rectangle)shape).setEndPoint(new Point2D(endX, endY));
-
-                            System.out.println("found");
-                            break;
-                        }
-                    }
-                }
-
+                moveRelease(e);
             };
 
+    private int searchForRectangle() {
+        for (int i = 0; i < Controller.shapesList.size(); i++) {
+            if (Controller.shapesList.get(i) instanceof Rectangle) {
+                if (((Rectangle) Controller.shapesList.get(i)).getStartPoint().getX() == startPoint.getX() &&
+                        ((Rectangle) Controller.shapesList.get(i)).getStartPoint().getY() == startPoint.getY() &&
+                        ((Rectangle) Controller.shapesList.get(i)).getEndPoint().getX() == endPoint.getX() &&
+                        ((Rectangle) Controller.shapesList.get(i)).getEndPoint().getY() == endPoint.getY()) {
+
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
 
     @Override

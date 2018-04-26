@@ -21,7 +21,9 @@ public interface Shape {
     void setStrokeWidth(double width);
     double getStrokeWidth();
     void draw(Object pane);
-    void move(MouseEvent e);
+    void movePress(MouseEvent e);
     void moveDrag(MouseEvent e);
+    void moveRelease(MouseEvent e);
     void removeDeprecated(Pane pane);
+    void removeShape(MouseEvent e);
 }
