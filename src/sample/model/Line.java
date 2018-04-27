@@ -3,10 +3,12 @@ package sample.model;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import sample.controller.Controller;
+import sample.lang.Lang;
 
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class Line extends AbstractShape {
     private double orgTranslateX, orgTranslateY;
     Pane p;
 
-    public Line(){
+    public Line() {
         this.name = "line";
     }
 
@@ -81,7 +83,7 @@ public class Line extends AbstractShape {
 
     @Override
     public void setStrokeWidth(double width) {
-        this.width=width;
+        this.width = width;
     }
 
     @Override
@@ -97,15 +99,13 @@ public class Line extends AbstractShape {
         line.setStartY(getStartPoint().getY());
         line.setEndX(getEndPoint().getX());
         line.setEndY(getEndPoint().getY());
-        line.setStroke(Color.BLACK);
-//        line.setStroke(getColor());
+        line.setStroke(getColor());
         line.setFill(getFillColor());
-//        line.setStrokeWidth(getStrokeWidth());
-        line.setStrokeWidth(5);
+        line.setStrokeWidth(getStrokeWidth());
         line.setOnMousePressed(lineOnMousePressedEventHandler);
         line.setOnMouseDragged(lineOnMouseDraggedEventHandler);
         line.setOnMouseReleased(lineOnMouseReleasedEventHandler);
-        line.setOnMouseReleased(lineOnMouseClickedEventHandler);
+        line.setOnMouseClicked(lineOnMouseClickedEventHandler);
         p.getChildren().add(line);
     }
 
@@ -120,19 +120,32 @@ public class Line extends AbstractShape {
     }
 
     @Override
-    public void moveRelease(MouseEvent e) {
+    public void moveRelease() {
 
     }
 
     @Override
     public void removeShape(MouseEvent e) {
+        int index = searchForLine();
+        System.out.println("index is " + index);
+
+        if(Controller.shapesList.size()==0)
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error", "Cannot Delete",
+                    "There is nothing to delete");
+        else
+        {
+            p.getChildren().remove(line);
+            Controller.shapesList.remove(index);
+
+        }
 
     }
 
-    private double startX =0;
+    private double startX = 0;
     private double endX = 0;
-    private double startY =0;
+    private double startY = 0;
     private double endY = 0;
+
 
     private EventHandler<MouseEvent> lineOnMouseClickedEventHandler =
             new EventHandler<MouseEvent>() {
@@ -141,22 +154,19 @@ public class Line extends AbstractShape {
 
                     line = (javafx.scene.shape.Line) (e.getSource());
 
-                    startX = line.getBoundsInParent().getMinX();
-                    startY = line.getBoundsInParent().getMaxY();
+                    startX = line.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
+                    startY = line.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
 
-                    endX = line.getBoundsInParent().getMaxX();
-                    endY = line.getBoundsInParent().getMinY();
+                    endX = line.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
+                    endY = line.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
 
-                    int index = searchForLine();
-                    System.out.println("index is " + index);
-
-                    if (Controller.deleteSelected) {
-                        p.getChildren().remove(line);
-                        Controller.shapesList.remove(index);
+                    if(Controller.deleteSelected) {
+                        removeShape(e);
                     }
 
                 }
             };
+
 
     private EventHandler<MouseEvent> lineOnMousePressedEventHandler =
             new EventHandler<MouseEvent>() {
@@ -166,7 +176,7 @@ public class Line extends AbstractShape {
                     orgSceneY = e.getSceneY();
                     orgTranslateX = ((javafx.scene.shape.Line) (e.getSource())).getTranslateX();
                     orgTranslateY = ((javafx.scene.shape.Line) (e.getSource())).getTranslateY();
-                    startPoint = new Point2D(line.getBoundsInParent().getMinX(),line.getBoundsInParent().getMaxX());
+                    startPoint = new Point2D(line.getBoundsInParent().getMinX(), line.getBoundsInParent().getMaxX());
                     endPoint = new Point2D(line.getBoundsInParent().getMaxX(),
                             line.getBoundsInParent().getMinY());
 
@@ -181,13 +191,13 @@ public class Line extends AbstractShape {
                     double offsetY = e.getSceneY() - orgSceneY;
                     double newTranslateX = orgTranslateX + offsetX;
                     double newTranslateY = orgTranslateY + offsetY;
-                    ((javafx.scene.shape.Line)(e.getSource())).setTranslateX(newTranslateX);
-                    ((javafx.scene.shape.Line)(e.getSource())).setTranslateY(newTranslateY);
-                    startX = line.getBoundsInParent().getMaxX() + getStrokeWidth()/2;
-                    startY = line.getBoundsInParent().getMaxY() - getStrokeWidth()/2;
+                    ((javafx.scene.shape.Line) (e.getSource())).setTranslateX(newTranslateX);
+                    ((javafx.scene.shape.Line) (e.getSource())).setTranslateY(newTranslateY);
+                    startX = line.getBoundsInParent().getMaxX() + getStrokeWidth() / 2;
+                    startY = line.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
 
-                    endX = line.getBoundsInParent().getMinX() - getStrokeWidth()/2;
-                    endY = line.getBoundsInParent().getMinY() + getStrokeWidth()/2;
+                    endX = line.getBoundsInParent().getMinX() - getStrokeWidth() / 2;
+                    endY = line.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
                 }
             };
 
@@ -195,34 +205,21 @@ public class Line extends AbstractShape {
             e -> {
                 System.out.println("----------------------------------");
 
-                for(Shape shape : Controller.shapesList){
-                    if(shape instanceof Line){
-                        if(((Line)shape).getStartPoint().getX() == startPoint.getX() &&
-                                ((Line)shape).getStartPoint().getY() == startPoint.getY() &&
-                                ((Line)shape).getEndPoint().getX() == endPoint.getX() &&
-                                ((Line)shape).getEndPoint().getY() == endPoint.getY()){
+                int index = searchForLine();
 
-                            ((Line)shape).setStartPoint(new Point2D(startX, startY));
-                            ((Line)shape).setEndPoint(new Point2D(endX, endY));
+                ((Line) Controller.shapesList.get(index)).setStartPoint(new Point2D(startX, startY));
+                ((Line) Controller.shapesList.get(index)).setEndPoint(new Point2D(endX, endY));
 
-                            System.out.println("found");
-                            break;
-                        }
-                    }
-                }
 
             };
 
-    private int searchForLine()
-    {
-        for(int i=0; i<Controller.shapesList.size(); i++){
-            if(Controller.shapesList.get(i) instanceof Line){
-                if(((Line)Controller.shapesList.get(i)).getStartPoint().getX() == startPoint.getX() &&
-                        ((Line)Controller.shapesList.get(i)).getStartPoint().getY() == startPoint.getY() &&
-                        ((Line)Controller.shapesList.get(i)).getEndPoint().getX() == endPoint.getX() &&
-                        ((Line)Controller.shapesList.get(i)).getEndPoint().getY() == endPoint.getY()){
-
-                    System.out.println("found line");
+    private int searchForLine() {
+        for (int i = 0; i < Controller.shapesList.size(); i++) {
+            if (Controller.shapesList.get(i) instanceof Line) {
+                if (((Line) Controller.shapesList.get(i)).getStartPoint().getX() == startPoint.getX() &&
+                        ((Line) Controller.shapesList.get(i)).getStartPoint().getY() == startPoint.getY() &&
+                        ((Line) Controller.shapesList.get(i)).getEndPoint().getX() == endPoint.getX() &&
+                        ((Line) Controller.shapesList.get(i)).getEndPoint().getY() == endPoint.getY()) {
                     return i;
                 }
             }
@@ -231,7 +228,7 @@ public class Line extends AbstractShape {
     }
 
     @Override
-    public void removeDeprecated(Pane pane){
+    public void removeDeprecated(Pane pane) {
         pane.getChildren().remove(line);
     }
 }

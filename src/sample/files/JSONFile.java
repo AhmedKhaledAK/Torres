@@ -26,44 +26,19 @@ public class JSONFile implements ISaveLoadStrategy {
                 jsonObject.put("color", shapesList.get(i).getColor().toString());
                 jsonObject.put("strokeWidth", new Double(shapesList.get(i).getStrokeWidth()));
                 jsonObject.put("fillColor", shapesList.get(i).getFillColor().toString());
+                jsonObject.put("start-x", (shapesList.get(i)).getStartPoint().getX());
+                jsonObject.put("start-y", shapesList.get(i).getStartPoint().getY());
+                jsonObject.put("end-x", shapesList.get(i).getEndPoint().getX());
+                jsonObject.put("end-y", shapesList.get(i).getEndPoint().getY());
 
-                if(shapesList.get(i) instanceof Line)
+                if(shapesList.get(i) instanceof Circle)
                 {
-                    jsonObject.put("start-x", ((Line)shapesList.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Line)shapesList.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Line)shapesList.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Line)shapesList.get(i)).getEndPoint().getY());
-                }
-                else if(shapesList.get(i) instanceof Rectangle)
-                {
-                    jsonObject.put("start-x", ((Rectangle)shapesList.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Rectangle)shapesList.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Rectangle)shapesList.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Rectangle)shapesList.get(i)).getEndPoint().getY());
-                }
-                else if(shapesList.get(i) instanceof Square)
-                {
-                    jsonObject.put("start-x", ((Square)shapesList.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Square)shapesList.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Square)shapesList.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Square)shapesList.get(i)).getEndPoint().getY());
-                }
-                else if(shapesList.get(i) instanceof Circle)
-                {
-                    jsonObject.put("start-x", ((Circle)shapesList.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Circle)shapesList.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Circle)shapesList.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Circle)shapesList.get(i)).getEndPoint().getY());
                     jsonObject.put("center-x", ((Circle)shapesList.get(i)).getCenterPoint().getY());
                     jsonObject.put("center-y",((Circle)shapesList.get(i)).getCenterPoint().getY());
                     jsonObject.put("radius",((Circle)shapesList.get(i)).getRadius());
                 }
                 else if(shapesList.get(i) instanceof Ellipse)
                 {
-                    jsonObject.put("start-x", ((Ellipse)shapesList.get(i)).getStartPoint().getX());
-                    jsonObject.put("start-y", ((Ellipse)shapesList.get(i)).getStartPoint().getY());
-                    jsonObject.put("end-x", ((Ellipse)shapesList.get(i)).getEndPoint().getX());
-                    jsonObject.put("end-y", ((Ellipse)shapesList.get(i)).getEndPoint().getY());
                     jsonObject.put("center-x", ((Ellipse)shapesList.get(i)).getCenterPoint().getY());
                     jsonObject.put("center-y",((Ellipse)shapesList.get(i)).getCenterPoint().getY());
                     jsonObject.put("radius-x",((Ellipse)shapesList.get(i)).getRadius().getX());
@@ -88,10 +63,10 @@ public class JSONFile implements ISaveLoadStrategy {
         ShapeFactory shapeFactory = new ShapeFactory();
         Shape shape;
 
-        double startX=0;
-        double startY=0;
-        double endX=0;
-        double endY=0;
+        double startX;
+        double startY;
+        double endX;
+        double endY;
         double centerX = 0;
         double centerY = 0;
         double radius = 0;
@@ -106,28 +81,17 @@ public class JSONFile implements ISaveLoadStrategy {
                 String color = (String) jsonObject.get("color");
                 String fillColor = (String) jsonObject.get("fillColor");
                 double strokeWidth = (Double) jsonObject.get("strokeWidth");
+                startX = (Double) jsonObject.get("start-x");
+                startY = (Double) jsonObject.get("start-y");
+                endX = (Double) jsonObject.get("end-x");
+                endY = (Double) jsonObject.get("end-y");
 
-                if(name.equals("line") || name.equals("rectangle") || name.equals("square"))
-                {
-                    startX = (Double) jsonObject.get("start-x");
-                    startY = (Double) jsonObject.get("start-y");
-                    endX = (Double) jsonObject.get("end-x");
-                    endY = (Double) jsonObject.get("end-y");
-                }
-                else if(name.equals("circle")){
-                    startX = (Double) jsonObject.get("start-x");
-                    startY = (Double) jsonObject.get("start-y");
-                    endX = (Double) jsonObject.get("end-x");
-                    endY = (Double) jsonObject.get("end-y");
+                if(name.equals("circle")){
                     centerX = (Double) jsonObject.get("center-x");
                     centerY = (Double) jsonObject.get("center-y");
                     radius = (Double) jsonObject.get("radius");
                 }
                 else if(name.equals("ellipse")){
-                    startX = (Double) jsonObject.get("start-x");
-                    startY = (Double) jsonObject.get("start-y");
-                    endX = (Double) jsonObject.get("end-x");
-                    endY = (Double) jsonObject.get("end-y");
                     centerX = (Double) jsonObject.get("center-x");
                     centerY = (Double) jsonObject.get("center-y");
                     radiusX = (Double) jsonObject.get("radius-x");
@@ -139,38 +103,19 @@ public class JSONFile implements ISaveLoadStrategy {
                 shape.setFillColor(Color.web(fillColor));
                 shape.setStrokeWidth(strokeWidth);
                 ((AbstractShape)shape).setName(name);
+                shape.setStartPoint(new Point2D(startX, startY));
+                shape.setEndPoint(new Point2D(endX, endY));
 
                 switch (name) {
-                    case "line":
-                        ((Line) shape).setStartPoint(new Point2D(startX, startY));
-                        ((Line) shape).setEndPoint(new Point2D(endX, endY));
-                        System.out.println(((Line) shape).getStartPoint().toString() + " " +
-                                ((Line) shape).getEndPoint().toString());
-                        break;
-                    case "rectangle":
-                        ((Rectangle) shape).setStartPoint(new Point2D(startX, startY));
-                        ((Rectangle) shape).setEndPoint(new Point2D(endX, endY));
-                        break;
-                    case "square":
-                        ((Square) shape).setStartPoint(new Point2D(startX, startY));
-                        ((Square) shape).setEndPoint(new Point2D(endX, endY));
-                        break;
                     case "circle":
-                        ((Circle) shape).setStartPoint(new Point2D(startX, startY));
-                        ((Circle) shape).setEndPoint(new Point2D(endX, endY));
                         ((Circle) shape).setCenterPoint(new Point2D(centerX, centerY));
                         ((Circle) shape).setRadius(radius);
                         break;
                     case "ellipse":
-                        ((Ellipse) shape).setStartPoint(new Point2D(startX, startY));
-                        ((Ellipse) shape).setEndPoint(new Point2D(endX, endY));
                         ((Ellipse) shape).setCenterPoint(new Point2D(centerX, centerY));
                         ((Ellipse) shape).setRadius(new Point2D(radiusX,radiusY));
                         break;
                 }
-                System.out.println(((AbstractShape) shape).getName() + " " +
-                        shape.getColor() + " " + shape.getStrokeWidth());
-
                 shapesList.add(shape);
             }
         }

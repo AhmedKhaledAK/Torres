@@ -2,11 +2,12 @@ package sample.model;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import sample.controller.Controller;
+import sample.lang.Lang;
 
 import java.util.Map;
 
@@ -14,22 +15,18 @@ import static java.lang.Math.abs;
 
 public class Ellipse extends AbstractShape {
 
-    javafx.scene.shape.Ellipse ellipse;
+    private javafx.scene.shape.Ellipse ellipse;
     private Point2D radius;
     private Point2D centerPoint;
     private Point2D startPoint;
     private Point2D endPoint;
-
+    private double originalX, originalY, deltaX;
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
 
-    private double centerX = 0;
-    private double centerY = 0;
-
-
     Pane p;
 
-    public Ellipse(){
+    public Ellipse() {
         this.name = "ellipse";
     }
 
@@ -118,35 +115,34 @@ public class Ellipse extends AbstractShape {
 
     @Override
     public void draw(Object pane) {
-        Pane p = (Pane) pane;
+        p = (Pane) pane;
         ellipse = new javafx.scene.shape.Ellipse();
         double centerY = (abs(getEndPoint().getY()) + abs(getStartPoint().getY())) / 2;
         double centerX = (abs(getEndPoint().getX()) + abs(getStartPoint().getX())) / 2;
         ellipse.setCenterX(centerX);
         ellipse.setCenterY(centerY);
         setCenterPoint(new Point2D(centerX, centerY));
-        if(getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()){
-            ellipse.setRadiusY((getEndPoint().getY() - getStartPoint().getY())/2);
-            ellipse.setRadiusX((getEndPoint().getX() - getStartPoint().getX())/2);
-        }else if(getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
-            ellipse.setRadiusX((getStartPoint().getX() - getEndPoint().getX())/2);
-            ellipse.setRadiusY((getStartPoint().getY() - getEndPoint().getY())/2);
-        }/*else if(getEndPoint().getX() == getStartPoint().getX() && getEndPoint().getY() == getStartPoint().getY()){
-        }*/else if(getStartPoint().getX() > getEndPoint().getX() && getEndPoint().getY() > getStartPoint().getY()){
-            ellipse.setRadiusX((getStartPoint().getX() - getEndPoint().getX())/2);
-            ellipse.setRadiusY((getEndPoint().getY() - getStartPoint().getY())/2);
-        }else if(getEndPoint().getX() > getStartPoint().getX() && getStartPoint().getY() > getEndPoint().getY()){
-            ellipse.setRadiusX((getEndPoint().getX() - getStartPoint().getX())/2);
-            ellipse.setRadiusY((getStartPoint().getY() - getEndPoint().getY())/2);
+        if (getEndPoint().getX() > getStartPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
+            ellipse.setRadiusY((getEndPoint().getY() - getStartPoint().getY()) / 2);
+            ellipse.setRadiusX((getEndPoint().getX() - getStartPoint().getX()) / 2);
+        } else if (getEndPoint().getX() < getStartPoint().getX() && getEndPoint().getY() < getStartPoint().getY()) {
+            ellipse.setRadiusX((getStartPoint().getX() - getEndPoint().getX()) / 2);
+            ellipse.setRadiusY((getStartPoint().getY() - getEndPoint().getY()) / 2);
+        } else if (getStartPoint().getX() > getEndPoint().getX() && getEndPoint().getY() > getStartPoint().getY()) {
+            ellipse.setRadiusX((getStartPoint().getX() - getEndPoint().getX()) / 2);
+            ellipse.setRadiusY((getEndPoint().getY() - getStartPoint().getY()) / 2);
+        } else if (getEndPoint().getX() > getStartPoint().getX() && getStartPoint().getY() > getEndPoint().getY()) {
+            ellipse.setRadiusX((getEndPoint().getX() - getStartPoint().getX()) / 2);
+            ellipse.setRadiusY((getStartPoint().getY() - getEndPoint().getY()) / 2);
         }
         setRadius(new Point2D(ellipse.getRadiusX(), ellipse.getRadiusY()));
-        //ellipse= (javafx.scene.shape.Ellipse) move(E);
         ellipse.setStroke(getColor());
         ellipse.setFill(getFillColor());
         ellipse.setStrokeWidth(getStrokeWidth());
         ellipse.setOnMousePressed(ellipseOnMousePressedEventHandler);
         ellipse.setOnMouseDragged(ellipseOnMouseDraggedEventHandler);
         ellipse.setOnMouseReleased(ellipseOnMouseReleasedEventHandler);
+        ellipse.setOnMouseClicked(ellipseOnMouseClickedEventHandler);
         p.getChildren().add(ellipse);
     }
 
@@ -156,48 +152,93 @@ public class Ellipse extends AbstractShape {
     }
 
     @Override
-    public void removeShape(MouseEvent e) {
-
-    }
-
-    @Override
     public void moveDrag(MouseEvent e) {
-        System.out.println("in mouse drag");
 
     }
 
     @Override
-    public void moveRelease(MouseEvent e) {
+    public void moveRelease() {
 
     }
+
+    @Override
+    public void removeShape(MouseEvent e) {
+        int index = searchForEllipse();
+        System.out.println("index is " + index);
+
+        if (Controller.shapesList.size() == 0)
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error", "Cannot Delete",
+                    "There is nothing to delete");
+        else {
+            p.getChildren().remove(ellipse);
+            Controller.shapesList.remove(index);
+
+        }
+    }
+
+    private double centerX = 0;
+    private double centerY = 0;
+
+
+    private EventHandler<MouseEvent> ellipseOnMouseClickedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+
+                    ellipse = (javafx.scene.shape.Ellipse) (e.getTarget());
+
+                    centerX = (ellipse.getBoundsInParent().getMaxX() + ellipse.getBoundsInParent().getMinX()) / 2;
+                    centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY()) / 2;
+                    if (Controller.deleteSelected) {
+                        removeShape(e);
+                    }
+                }
+            };
+
 
     private EventHandler<MouseEvent> ellipseOnMousePressedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    orgSceneX = e.getSceneX();
-                    orgSceneY = e.getSceneY();
-                    orgTranslateX = ((javafx.scene.shape.Ellipse) (e.getSource())).getTranslateX();
-                    orgTranslateY = ((javafx.scene.shape.Ellipse) (e.getSource())).getTranslateY();
-                    centerX = (ellipse.getBoundsInParent().getMaxX() + ellipse.getBoundsInParent().getMinX())/2;
-                    centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY())/2;
-                    System.out.println("x is " + centerX);
-                    System.out.println("y is " + centerY);
+
+                    if (Controller.resizeSelected) {
+                        originalX = ellipse.getCenterX() + ellipse.getRadiusX();
+                        originalY = ellipse.getCenterY();
+                    } else {
+                        orgSceneX = e.getSceneX();
+                        orgSceneY = e.getSceneY();
+                        orgTranslateX = ((javafx.scene.shape.Ellipse) (e.getSource())).getTranslateX();
+                        orgTranslateY = ((javafx.scene.shape.Ellipse) (e.getSource())).getTranslateY();
+                        centerX = (ellipse.getBoundsInParent().getMaxX() + ellipse.getBoundsInParent().getMinX()) / 2;
+                        centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY()) / 2;
+                        System.out.println("x is " + centerX);
+                        System.out.println("y is " + centerY);
+                    }
                 }
             };
 
     private EventHandler<MouseEvent> ellipseOnMouseDraggedEventHandler =
             e -> {
-                double offsetX = e.getSceneX() - orgSceneX;
-                double offsetY = e.getSceneY() - orgSceneY;
-                double newTranslateX = orgTranslateX + offsetX;
-                double newTranslateY = orgTranslateY + offsetY;
-                ((javafx.scene.shape.Ellipse)(e.getSource())).setTranslateX(newTranslateX);
-                ((javafx.scene.shape.Ellipse)(e.getSource())).setTranslateY(newTranslateY);
-                centerX = (ellipse.getBoundsInParent().getMaxX() + ellipse.getBoundsInParent().getMinX())/2;
-                centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY())/2;
-                System.out.println("x is " + centerX);
-                System.out.println("y is " + centerY);
+
+                if (Controller.resizeSelected) {
+                    deltaX = e.getSceneX() - originalX;
+                    ellipse.setRadiusX(ellipse.getRadiusX() + deltaX / 2);
+
+                    originalX = ellipse.getCenterX() + ellipse.getRadiusX();
+                    originalY = ellipse.getCenterY();
+
+                } else {
+                    double offsetX = e.getSceneX() - orgSceneX;
+                    double offsetY = e.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+                    ((javafx.scene.shape.Ellipse) (e.getSource())).setTranslateX(newTranslateX);
+                    ((javafx.scene.shape.Ellipse) (e.getSource())).setTranslateY(newTranslateY);
+                    centerX = (ellipse.getBoundsInParent().getMaxX() + ellipse.getBoundsInParent().getMinX()) / 2;
+                    centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY()) / 2;
+                    System.out.println("x is " + centerX);
+                    System.out.println("y is " + centerY);
+                }
             };
 
     private EventHandler<MouseEvent> ellipseOnMouseReleasedEventHandler =
@@ -206,22 +247,38 @@ public class Ellipse extends AbstractShape {
                 System.out.println(centerX);
                 System.out.println(centerY);
 
-                for(Shape shape : Controller.shapesList){
-                    if(shape instanceof Ellipse){
-                        if(((Ellipse)shape).getCenterPoint().getX() == ellipse.getCenterX()
-                                && ((Ellipse)shape).getCenterPoint().getY() == ellipse.getCenterY()){
-                            ((Ellipse)shape).setCenterPoint(new Point2D(centerX, centerY));
-                            ((Ellipse)shape).setStartPoint(new Point2D(centerX - ellipse.getRadiusX(), centerY - ellipse.getRadiusY()));
-                            ((Ellipse)shape).setEndPoint(new Point2D(centerX + ellipse.getRadiusX(), centerY + ellipse.getRadiusY()));
-                            break;
-                        }
-                    }
+                int index = searchForEllipse();
+
+                if (Controller.resizeSelected) {
+                    ((Ellipse) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
+                    ((Ellipse) Controller.shapesList.get(index)).setEndPoint(new Point2D(ellipse.getCenterX()
+                            + ellipse.getRadiusX(), ellipse.getCenterY() + ellipse.getRadiusY()));
+                    ((Ellipse) Controller.shapesList.get(index)).setStartPoint(new Point2D(ellipse.getCenterX() -
+                            ellipse.getRadiusX(), ellipse.getCenterY() + ellipse.getRadiusY()));
                 }
+
+                ((Ellipse) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
+                ((Ellipse) Controller.shapesList.get(index)).setStartPoint(new Point2D(centerX - ellipse.getRadiusX(),
+                        centerY - ellipse.getRadiusY()));
+                ((Ellipse) Controller.shapesList.get(index)).setEndPoint(new Point2D(centerX + ellipse.getRadiusX(),
+                        centerY + ellipse.getRadiusY()));
+
             };
+
+    private int searchForEllipse() {
+        for (int i = 0; i < Controller.shapesList.size(); i++) {
+            if (Controller.shapesList.get(i) instanceof Ellipse) {
+                if (((Ellipse) Controller.shapesList.get(i)).getCenterPoint().getX() == centerPoint.getX()
+                        && ((Ellipse) Controller.shapesList.get(i)).getCenterPoint().getY() == centerPoint.getY()) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
     @Override
     public void removeDeprecated(Pane pane) {
         pane.getChildren().remove(ellipse);
     }
-
 }

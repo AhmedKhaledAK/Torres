@@ -1,41 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.AmbientLight?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ColorPicker?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXColorPicker?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="649.0" prefWidth="935.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="514.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
    <children>
-      <VBox layoutX="5.0" prefHeight="649.0" prefWidth="935.0">
+      <Pane fx:id="buttonPane" prefHeight="105.0" prefWidth="863.0">
          <children>
-            <HBox prefHeight="41.0" prefWidth="811.0">
-               <children>
-                  <ColorPicker id="colorPicker" fx:id="colorPicker" prefHeight="30.0" prefWidth="89.0" />
-                  <Slider fx:id="sliderSize" majorTickUnit="10.0" max="50.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" />
-                  <CheckBox fx:id="checkBoxEraser" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Eraser" />
-                  <Button fx:id="btnBrush" mnemonicParsing="false" onAction="#onBtnBrushClick" prefHeight="25.0" prefWidth="49.0" text="Brush" />
-                  <Button fx:id="btnLine" mnemonicParsing="false" onAction="#onBtnLineClick" text="Line" />
-                  <Button fx:id="btnCircle" mnemonicParsing="false" onAction="#onBtnCircleClick" text="Circle" />
-                  <Button fx:id="btnRect" mnemonicParsing="false" onAction="#onBtnRectClick" prefHeight="25.0" prefWidth="71.0" text="Rectangle" />
-                  <Button fx:id="btnSquare" mnemonicParsing="false" onAction="#onBtnSquareClick" prefHeight="25.0" prefWidth="57.0" text="Square" />
-                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onBtnSaveClick" text="Save" />
-                  <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onBtnLoadClick" text="Load" />
-                  <Button fx:id="btnEllipse" mnemonicParsing="false" onAction="#onBtnEllipseClick" prefHeight="18.0" prefWidth="88.0" text="Ellipse" />
-                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onBtnDeleteClick" prefHeight="18.0" prefWidth="88.0" text="Delete" />
-                  <Button mnemonicParsing="false" onMouseClicked="#onBtnResizeClick" text="Resize" />
-                  <Button fx:id="btnUndp" mnemonicParsing="false" onMouseClicked="#onBtnUndoClick" text="Undo" />
-                  <Button fx:id="btnRedo" mnemonicParsing="false" onMouseClicked="#onBtnRedoClick" text="Redo" />
-               </children>
-            </HBox>
+            <JFXColorPicker fx:id="colorPicker" layoutX="14.0" layoutY="12.0" prefHeight="28.0" prefWidth="95.0" />
+            <JFXSlider fx:id="sliderSize" layoutX="14.0" layoutY="47.0" max="50.0" min="1.0" prefHeight="34.0" prefWidth="86.0" showTickMarks="true" />
+            <JFXButton fx:id="btnEraser" layoutX="115.0" layoutY="41.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnEraserClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../eraser.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnLine" layoutX="175.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnLineClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../line.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnCircle" layoutX="174.0" layoutY="41.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnCircleClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../circle.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnRect" layoutX="222.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnRectClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="27.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../rectangle%20(2).png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnTriangle" layoutX="220.0" layoutY="37.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnTriangleClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="33.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../triangle.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnEllipse" layoutX="273.0" layoutY="12.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnEllipseClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../oval.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnSquare" layoutX="272.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnSquareClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../square.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnMove" layoutX="456.0" layoutY="23.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="53.0" onAction="#onBtnMoveClick" prefHeight="28.0" prefWidth="53.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../move.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnResize" layoutX="511.0" layoutY="23.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="53.0" onAction="#onBtnResizeClick" prefHeight="28.0" prefWidth="53.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resize.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnDelete" layoutX="566.0" layoutY="23.0" minWidth="53.0" onAction="#onBtnDeleteClick" prefHeight="28.0" prefWidth="53.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../delete.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnSave" layoutX="793.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnSaveClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../save.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnLoad" layoutX="795.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnLoadClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../load.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <JFXButton fx:id="btnBrush" layoutX="115.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="45.0" onAction="#onBtnBrushClick" prefHeight="24.0" prefWidth="45.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../brush.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
+            <Label layoutX="177.0" layoutY="79.0" text="Drawing Tools" />
+            <Label layoutX="499.0" layoutY="78.0" text="Editing Tools" />
+            <JFXButton fx:id="btnUndo" layoutX="732.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="41.0" onAction="#onBtnUndoClick" prefHeight="24.0" prefWidth="41.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../undo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnRedo" layoutX="732.0" layoutY="42.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="41.0" onAction="#onBtnRedoClick" prefHeight="24.0" prefWidth="41.0" scaleShape="false" text=" ">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../redo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <Label layoutX="635.0" layoutY="77.0" text="Background" />
+            <JFXColorPicker fx:id="backgroundColorPicker" layoutX="630.0" layoutY="23.0" prefHeight="28.0" prefWidth="77.0" />
+            <JFXColorPicker fx:id="fillColorPicker" layoutX="348.0" layoutY="24.0" />
+            <Label layoutX="360.0" layoutY="78.0" text="Shape Fill" />
+            <Label layoutX="16.0" layoutY="78.0" text="Shape Outline" />
          </children>
-      </VBox>
-      <Label fx:id="lblCoordinates" layoutX="14.0" layoutY="620.0" prefHeight="17.0" prefWidth="174.0" text="" />
-      <AmbientLight color="CHARTREUSE" lightOn="true" />
+      </Pane>
+      <Label fx:id="lblCoordinates" layoutX="21.0" layoutY="481.0" prefHeight="18.0" prefWidth="165.0" text=" " />
    </children>
 </Pane>

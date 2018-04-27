@@ -16,7 +16,8 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         //sets the background color to white
-        root.setStyle("-fx-background-color: #FFFFFF;");
+//        root.setStyle("-fx-background-color: #FFFFFF;");
+
         primaryStage.setTitle("Paint");
         scene = new Scene(root);
         primaryStage.setScene(scene);

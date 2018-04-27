@@ -8,8 +8,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import sample.controller.Controller;
 import sample.lang.Lang;
-
-import javax.naming.ldap.Control;
 import java.util.Map;
 
 public class Circle extends AbstractShape {
@@ -128,7 +126,7 @@ public class Circle extends AbstractShape {
         setCenterPoint(new Point2D(centerX, centerY));
         this.circle.setStroke(getColor());
         this.circle.setStrokeWidth(getStrokeWidth());
-        this.circle.setFill(Color.TRANSPARENT);
+        this.circle.setFill(getFillColor());
         this.circle.setRadius(diameter / 2);
         setRadius(circle.getRadius());
         circle.setOnMousePressed(circleOnMousePressedEventHandler);
@@ -152,7 +150,7 @@ public class Circle extends AbstractShape {
     }
 
     @Override
-    public void moveRelease(MouseEvent e) {
+    public void moveRelease() {
 
     }
 
@@ -180,11 +178,14 @@ public class Circle extends AbstractShape {
                 @Override
                 public void handle(MouseEvent e) {
 
-                    System.out.println("YOU CLICKED ON A FUCKING CIRCLE");
                     circle = (javafx.scene.shape.Circle) (e.getTarget());
 
                     centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
                     centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
+                    if(Controller.deleteSelected) {
+                        removeShape(e);
+                    }
+
                 }
             };
 
@@ -208,9 +209,6 @@ public class Circle extends AbstractShape {
 
                         centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
                         centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
-                        System.out.println("x is " + centerX);
-                        System.out.println("y is " + centerY);
-
                     }
 
 

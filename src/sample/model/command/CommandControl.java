@@ -1,23 +1,33 @@
 package sample.model.command;
 
+import javafx.scene.control.Alert;
+import sample.lang.Lang;
+
 public class CommandControl {
 
-    Command theCommand;
+    private Command command;
 
-    public CommandControl(Command newCommand)
-    {
-        theCommand = newCommand;
+    public CommandControl(Command command) {
+        this.command = command;
     }
 
     public void addOperation(){
-        theCommand.execute();
+        command.execute();
     }
 
     public void pressUndo(){
-        theCommand.undo();
+        if(command!=null)
+            command.undo();
+        else
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error",  "", "No steps to undo.");
+
     }
 
     public void  pressRedo(){
-        theCommand.redo();
+        if(command!=null)
+            command.redo();
+        else
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error",  "", "No steps to redo.");
+
     }
 }

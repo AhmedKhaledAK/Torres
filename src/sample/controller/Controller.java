@@ -21,40 +21,44 @@ import sample.model.command.Command;
 import sample.model.command.CommandControl;
 import sample.model.command.DrawShapeCommand;
 
+import javax.swing.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Controller implements DrawingEngine {
 
     @FXML
-    public Button btnBrush, btnLine, btnRect, btnCircle, btnSquare, btnSave, btnLoad;
+    public Button btnBrush, btnEraser, btnEllipse, btnTriangle, btnLine,
+            btnRect, btnCircle, btnSquare, btnSave, btnLoad, btnMove, btnUndo, btnRedo, btnResize, btnDelete;
 
     @FXML
     public Label lblCoordinates;
 
     @FXML
-    private ColorPicker colorPicker;
-
-    @FXML
-    private CheckBox checkBoxEraser;
+    private ColorPicker colorPicker, backgroundColorPicker, fillColorPicker;
 
     @FXML
     private Slider sliderSize;
 
     @FXML
-    Pane pane;
+    Pane pane, buttonPane;
+
 
     public Pane getPane() {
         return pane;
     }
 
     private boolean brushSelected = false;
+    private boolean eraserSelected = false;
     private boolean lineSelected = false;
     private boolean circleSelected = false;
     private boolean rectangleSelected = false;
     private boolean squareSelected = false;
     private boolean ellipseSelected = false;
+    private boolean triangleSelected = false;
     public static boolean deleteSelected = false;
     public static boolean resizeSelected = false;
+    public static boolean moveSelected = false;
     public static boolean undoSelected = false;
 
     private MouseEvent currentMouseEvent;
@@ -65,7 +69,9 @@ public class Controller implements DrawingEngine {
     Circle brushStroke = null;
     Shape shape = null;
     ShapeFactory shapeFactory = new ShapeFactory();
+    Command command = null;
     private double x = 0, y = 0;
+
 
     /**
      * Button Clicks
@@ -73,16 +79,32 @@ public class Controller implements DrawingEngine {
 
     public void onBtnBrushClick(ActionEvent actionEvent) {
         brushSelected ^= true;
+        eraserSelected = false;
+        lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
+        deleteSelected = false;
+        resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
     }
 
     public void onBtnLineClick(ActionEvent actionEvent) {
         lineSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         rectangleSelected = false;
-        circleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
         ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -90,12 +112,17 @@ public class Controller implements DrawingEngine {
 
     public void onBtnCircleClick(ActionEvent actionEvent) {
         circleSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
         rectangleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
         ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -103,12 +130,17 @@ public class Controller implements DrawingEngine {
 
     public void onBtnRectClick(ActionEvent actionEvent) {
         rectangleSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
         ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -116,12 +148,17 @@ public class Controller implements DrawingEngine {
 
     public void onBtnSquareClick(ActionEvent actionEvent) {
         squareSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
         ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -129,12 +166,17 @@ public class Controller implements DrawingEngine {
 
     public void onBtnEllipseClick(ActionEvent actionEvent) {
         ellipseSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -142,79 +184,154 @@ public class Controller implements DrawingEngine {
     }
 
     public void onBtnSaveClick(ActionEvent actionEvent) {
-        ellipseSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         FileClass fileClass = new FileClass();
         fileClass.save(shapesList);
     }
 
     public void onBtnLoadClick(ActionEvent actionEvent) {
-        ellipseSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
         deleteSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         FileClass fileClass = new FileClass();
         shapesList = fileClass.load();
+        pane.getChildren().clear();
+        pane.getChildren().add(buttonPane);
         for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 
     public void onBtnDeleteClick(ActionEvent actionEvent) {
         deleteSelected ^= true;
-        ellipseSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         command = new RemoveShapeCommand(shape, this);
     }
 
-    public void onBtnResizeClick(MouseEvent event) {
+    public void onBtnResizeClick(ActionEvent event) {
         resizeSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
         rectangleSelected = false;
-        circleSelected = false;
         squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
         ellipseSelected = false;
         deleteSelected = false;
+        moveSelected = false;
+        undoSelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
     }
 
-    public void onBtnUndoClick(MouseEvent event) {
-        undoSelected = true;
-        ellipseSelected = false;
+    public void onBtnEraserClick(ActionEvent actionEvent) {
+        eraserSelected ^= true;
+        brushSelected = false;
         lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
         circleSelected = false;
+        ellipseSelected = false;
+        deleteSelected = false;
+        resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
+    }
+
+    public void onBtnTriangleClick(ActionEvent actionEvent) {
+        triangleSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
+        lineSelected = false;
         rectangleSelected = false;
         squareSelected = false;
         deleteSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
         resizeSelected = false;
+        moveSelected = false;
+        undoSelected = false;
+    }
+
+    public void onBtnMoveClick(ActionEvent actionEvent) {
+        moveSelected ^= true;
+        brushSelected = false;
+        eraserSelected = false;
+        lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
+        resizeSelected = false;
+        deleteSelected = false;
+        undoSelected = false;
+    }
+
+    public void onBtnUndoClick(ActionEvent event) {
+        undoSelected = true;
+        deleteSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
+        lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
+        resizeSelected = false;
+        moveSelected = false;
 
         CommandControl commandControl = new CommandControl(command);
         commandControl.pressUndo();
     }
 
-    public void onBtnRedoClick(MouseEvent mouseEvent) {
-        ellipseSelected = false;
+    public void onBtnRedoClick(ActionEvent mouseEvent) {
+        deleteSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
         lineSelected = false;
-        circleSelected = false;
         rectangleSelected = false;
         squareSelected = false;
-        deleteSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
         resizeSelected = false;
+        moveSelected = false;
 
         CommandControl commandControl = new CommandControl(command);
         commandControl.pressRedo();
@@ -225,14 +342,11 @@ public class Controller implements DrawingEngine {
     /**
      * Pane Actions
      */
-    Command command = null;
-
     public void onMouseClicked(MouseEvent mouseEvent) {
         setCurrentMouseEvent(mouseEvent);
 
         if (deleteSelected) {
-            CommandControl commandControl = new CommandControl(command);
-            commandControl.addOperation();
+            command.execute();
         }
     }
 
@@ -241,20 +355,23 @@ public class Controller implements DrawingEngine {
 
         x = mouseEvent.getSceneX();
         y = mouseEvent.getSceneY();
-
-        if(!deleteSelected)
-        {
-            if (lineSelected) {
-                shape = shapeFactory.createShape("line");
-            } else if (rectangleSelected) {
-                shape = shapeFactory.createShape("rectangle");
-            } else if (circleSelected) {
-                shape = shapeFactory.createShape("circle");
-            } else if (squareSelected) {
-                shape = shapeFactory.createShape("square");
-            } else if (ellipseSelected) {
-                shape = shapeFactory.createShape("ellipse");
-            }
+        if (lineSelected) {
+            shape = shapeFactory.createShape("line");
+            command = new DrawShapeCommand(shape, this);
+        } else if (rectangleSelected) {
+            shape = shapeFactory.createShape("rectangle");
+            command = new DrawShapeCommand(shape, this);
+        } else if (circleSelected) {
+            shape = shapeFactory.createShape("circle");
+            command = new DrawShapeCommand(shape, this);
+        } else if (squareSelected) {
+            shape = shapeFactory.createShape("square");
+            command = new DrawShapeCommand(shape, this);
+        } else if (ellipseSelected) {
+            shape = shapeFactory.createShape("ellipse");
+            command = new DrawShapeCommand(shape, this);
+        } else if (triangleSelected) {
+            shape = shapeFactory.createShape("triangle");
             command = new DrawShapeCommand(shape, this);
         }
     }
@@ -264,26 +381,16 @@ public class Controller implements DrawingEngine {
 
         double x1 = mouseEvent.getSceneX();
         double y1 = mouseEvent.getSceneY();
-        if (lineSelected) {
+        if (toolSelected()) {
             shape.removeDeprecated(pane);
-            drawLine(x, y, x1, y1, shape);
-        } else if (rectangleSelected) {
-            shape.removeDeprecated(pane);
-            drawRectangle(x, y, x1, y1, shape);
-        } else if (circleSelected) {
-            shape.removeDeprecated(pane);
-            drawCircle(x, y, x1, y1);
-        } else if (squareSelected) {
-            shape.removeDeprecated(pane);
-            drawSquare(x, y, x1, y1);
-        } else if (ellipseSelected) {
-            shape.removeDeprecated(pane);
-            drawEllipse(x, y, x1, y1);
-        } else if (brushSelected)
-            drawBrushStroke(x1, y1);
-        else if (checkBoxEraser.isSelected())
-            drawBrushStroke(x1, y1);
-
+            drawShape(shape, x, y, x1, y1);
+            if (brushSelected) {
+                drawBrushStroke(x1, y1);
+            }
+            else if (eraserSelected) {
+                drawBrushStroke(x1, y1);
+            }
+        }
     }
 
     public void onMouseReleased(MouseEvent mouseEvent) {
@@ -295,32 +402,23 @@ public class Controller implements DrawingEngine {
         if (deleteSelected) {
             System.out.println("nothing");
         } else if (toolSelected()) {
-            if (lineSelected) {
-                shape.removeDeprecated(pane);
-                drawLine(x, y, x1, y1, shape);
-            } else if (brushSelected)
-                drawBrushStroke(x1, y1);
-            else if (rectangleSelected) {
-                shape.removeDeprecated(pane);
-                drawRectangle(x, y, x1, y1, shape);
-            } else if (circleSelected) {
-                shape.removeDeprecated(pane);
-                drawCircle(x, y, x1, y1);
-            } else if (squareSelected) {
-                shape.removeDeprecated(pane);
-                drawSquare(x, y, x1, y1);
-            } else if (ellipseSelected) {
-                shape.removeDeprecated(pane);
-                drawEllipse(x, y, x1, y1);
-            } else if (checkBoxEraser.isSelected())
-                drawBrushStroke(x1, y1);
-
+            shape.removeDeprecated(pane);
+            drawShape(shape, x, y, x1, y1);
             addShape(shape);
+            if (brushSelected) {
+                drawBrushStroke(x1, y1);
+            }
+            else if (eraserSelected) {
+                drawBrushStroke(x1, y1);
+            }
         }
     }
 
     public void onMouseMoved(MouseEvent mouseEvent) {
-        lblCoordinates.setText("X: " + mouseEvent.getSceneX() + ", Y: " + mouseEvent.getSceneY());
+        DecimalFormat df = new DecimalFormat("#.##");
+        lblCoordinates.setText("X: " + df.format(mouseEvent.getSceneX()) + ", Y: " + df.format(mouseEvent.getSceneY()));
+        Color c = backgroundColorPicker.getValue();
+        pane.setStyle("-fx-background-color: " + toRGBCode(c));
     }
 
     public void onKeyPressed(KeyEvent e) {
@@ -367,37 +465,12 @@ public class Controller implements DrawingEngine {
     /**
      * Helper Methods
      */
-    private void drawLine(double startX, double startY, double endX, double endY, Shape shape) {
-        ((sample.model.Line) shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Line) shape).setEndPoint(new Point2D(endX, endY));
-        drawShape(shape);
-    }
-
-    private void drawCircle(double startX, double startY, double endX, double endY) {
-        ((sample.model.Circle) shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Circle) shape).setEndPoint(new Point2D(endX, endY));
-        drawShape(shape);
-    }
-
-    private void drawSquare(double startX, double startY, double endX, double endY) {
-        ((sample.model.Square) shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Square) shape).setEndPoint(new Point2D(endX, endY));
-        drawShape(shape);
-    }
-
-    private void drawEllipse(double startX, double startY, double endX, double endY) {
-        ((sample.model.Ellipse) shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Ellipse) shape).setEndPoint(new Point2D(endX, endY));
-        drawShape(shape);
-    }
-
-
     private void drawBrushStroke(double currentX, double currentY) {
         this.brushStroke = new Circle();
 
         if (brushSelected)
             this.brushStroke.setFill(colorPicker.getValue());
-        else if (checkBoxEraser.isSelected())
+        else if (eraserSelected)
             this.brushStroke.setFill(Color.WHITE);
 
         this.brushStroke.setRadius(sliderSize.getValue() / 2);
@@ -406,23 +479,17 @@ public class Controller implements DrawingEngine {
         pane.getChildren().add(brushStroke);
     }
 
-    private void drawRectangle(double startX, double startY, double endX, double endY, Shape shape) {
-        ((sample.model.Rectangle) shape).setStartPoint(new Point2D(startX, startY));
-        ((sample.model.Rectangle) shape).setEndPoint(new Point2D(endX, endY));
-        drawShape(shape);
-    }
-
-    private void drawShape(Shape shape) {
+    private void drawShape(Shape shape, double startX, double startY, double endX, double endY) {
+        shape.setStartPoint(new Point2D(startX, startY));
+        shape.setEndPoint(new Point2D(endX, endY));
         shape.setFillColor(Color.TRANSPARENT);
         shape.setColor(colorPicker.getValue());
         shape.setStrokeWidth(sliderSize.getValue());
-
-        CommandControl commandControl = new CommandControl(command);
-        commandControl.addOperation();
+        shape.draw(pane);
     }
 
     private boolean toolSelected() {
-        return (lineSelected || rectangleSelected || circleSelected || squareSelected || ellipseSelected);
+        return (lineSelected || rectangleSelected || circleSelected || squareSelected || ellipseSelected || triangleSelected);
     }
 
     public MouseEvent getCurrentMouseEvent() {
@@ -433,21 +500,44 @@ public class Controller implements DrawingEngine {
         this.currentMouseEvent = currentMouseEvent;
     }
 
+    private static String toRGBCode(Color color)
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
+    }
 
     /*End of Helper Methods*/
 
     @FXML
     public void initialize() {
         btnBrush.setCursor(Cursor.HAND);
+        btnEraser.setCursor(Cursor.HAND);
+
         btnLine.setCursor(Cursor.HAND);
         btnCircle.setCursor(Cursor.HAND);
         btnSquare.setCursor(Cursor.HAND);
-        btnLoad.setCursor(Cursor.HAND);
         btnRect.setCursor(Cursor.HAND);
+        btnEllipse.setCursor(Cursor.HAND);
+        btnTriangle.setCursor(Cursor.HAND);
+
+        btnResize.setCursor(Cursor.HAND);
+        btnMove.setCursor(Cursor.HAND);
+        btnDelete.setCursor(Cursor.HAND);
+
+        btnLoad.setCursor(Cursor.HAND);
         btnSave.setCursor(Cursor.HAND);
+        btnUndo.setCursor(Cursor.HAND);
+        btnRedo.setCursor(Cursor.HAND);
+
+        backgroundColorPicker.setCursor(Cursor.HAND);
         colorPicker.setCursor(Cursor.HAND);
         sliderSize.setCursor(Cursor.HAND);
-        checkBoxEraser.setCursor(Cursor.HAND);
+
+        Color c = backgroundColorPicker.getValue();
+        pane.setStyle("-fx-background-color: " + toRGBCode(c));
+        buttonPane.setStyle("-fx-background-color: #26C6DA");
     }
 
     @Override

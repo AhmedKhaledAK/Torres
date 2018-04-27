@@ -12,6 +12,10 @@ import java.util.Map;
 public interface Shape {
     void setPosition(Point2D position);
     Point2D getPosition();
+    void setStartPoint(Point2D startPoint);
+    Point2D getStartPoint();
+    void setEndPoint(Point2D endPoint);
+    Point2D getEndPoint();
     void setProperties(Map<String, Double> properties);
     Map<String, Double> getProperties();
     void setColor(Color color);
@@ -21,9 +25,9 @@ public interface Shape {
     void setStrokeWidth(double width);
     double getStrokeWidth();
     void draw(Object pane);
-    void movePress(MouseEvent e);
-    void moveDrag(MouseEvent e);
-    void moveRelease(MouseEvent e);
-    void removeDeprecated(Pane pane);
+    void movePress(MouseEvent mouseEvent);
+    void moveDrag(MouseEvent mouseEvent);
+    void moveRelease();
     void removeShape(MouseEvent e);
+    void removeDeprecated(Pane pane);
 }

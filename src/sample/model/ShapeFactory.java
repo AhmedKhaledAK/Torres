@@ -14,6 +14,8 @@ public class ShapeFactory {
                 return new Square();
             case "ellipse":
                 return new Ellipse();
+            case "triangle":
+                return new Triangle();
         }
         return null;
     }

@@ -1,9 +1,10 @@
 package sample.model.command;
 
+import javafx.scene.control.Alert;
 import sample.controller.Controller;
+import sample.lang.Lang;
 import sample.model.Shape;
 
-import javax.naming.ldap.Control;
 import java.util.Stack;
 
 public class DrawShapeCommand implements Command {
@@ -26,21 +27,30 @@ public class DrawShapeCommand implements Command {
     @Override
     public void undo() {
 
-        Shape tempShape = Controller.shapesList.get(Controller.shapesList.size()-1);
+        if(Controller.shapesList.size()==0)
+        {
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error",  "", "Cannot undo any more steps.");
 
-        shapeStack.push(tempShape);
-
-        shapeStack.peek().removeShape(controller.getCurrentMouseEvent());
-
+        }
+        else
+        {
+            Shape tempShape = Controller.shapesList.get(Controller.shapesList.size()-1);
+            shapeStack.push(tempShape);
+            shapeStack.peek().removeShape(controller.getCurrentMouseEvent());
+        }
     }
 
     @Override
     public void redo() {
+        if(shapeStack.isEmpty())
+        {
+            Lang.showDiag(Alert.AlertType.INFORMATION, "Error",  "", "Cannot redo any more steps.");
 
-        Controller.shapesList.add(shapeStack.peek());
-
-        shapeStack.pop().draw(controller.getPane());
-
-
+        }
+        else
+        {
+            Controller.shapesList.add(shapeStack.peek());
+            shapeStack.pop().draw(controller.getPane());
+        }
     }
 }

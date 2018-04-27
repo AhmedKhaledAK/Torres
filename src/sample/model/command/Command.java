@@ -2,7 +2,7 @@ package sample.model.command;
 
 public interface Command {
 
-    public void execute();
-    public void undo();
-    public void redo();
+    void execute();
+    void undo();
+    void redo();
 }
