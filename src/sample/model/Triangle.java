@@ -183,6 +183,15 @@ public class Triangle extends AbstractShape {
 
                 if (Controller.deleteSelected) {
                     removeShape(e);
+                }else if(Controller.copySelected){
+                    Triangle t = new Triangle();
+                    t.setStartPoint(new Point2D(getStartPoint().getX()+10, getStartPoint().getY()+10));
+                    t.setEndPoint(new Point2D(getEndPoint().getX()+10, getEndPoint().getY()+10));
+                    t.setStrokeWidth(triangle.getStrokeWidth());
+                    t.setColor(getColor());
+                    t.setFillColor(getFillColor());
+                    t.draw(p);
+                    Controller.shapesList.add(t);
                 }
             };
 

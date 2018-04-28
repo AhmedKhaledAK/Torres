@@ -191,6 +191,15 @@ public class Ellipse extends AbstractShape {
                     centerY = (ellipse.getBoundsInParent().getMaxY() + ellipse.getBoundsInParent().getMinY()) / 2;
                     if (Controller.deleteSelected) {
                         removeShape(e);
+                    } else if(Controller.copySelected){
+                        Ellipse el = new Ellipse();
+                        el.setStartPoint(new Point2D(getStartPoint().getX() +10, getStartPoint().getY() +10));
+                        el.setEndPoint(new Point2D(getEndPoint().getX() +10, getEndPoint().getY()+10));
+                        el.setStrokeWidth(ellipse.getStrokeWidth());
+                        el.setColor(getColor());
+                        el.setFillColor(getFillColor());
+                        el.draw(p);
+                        Controller.shapesList.add(el);
                     }
                 }
             };

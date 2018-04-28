@@ -20,6 +20,8 @@ public class Circle extends AbstractShape {
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
     private double originalX, originalY, deltaX;
+    double centerX = 0;
+    double centerY = 0;
 
     Pane p;
 
@@ -120,7 +122,6 @@ public class Circle extends AbstractShape {
         double centerY = (getEndPoint().getY() + getStartPoint().getY()) / 2;
         double centerX = (getEndPoint().getX() + getStartPoint().getX()) / 2;
 
-        System.out.println("end point x and y = " + getEndPoint().getX());
         this.circle.setCenterX(centerX);
         this.circle.setCenterY(centerY);
         setCenterPoint(new Point2D(centerX, centerY));
@@ -138,26 +139,78 @@ public class Circle extends AbstractShape {
 
     @Override
     public void movePress(MouseEvent e) {
+        if(Controller.resizeSelected)
+        {
+            originalX = circle.getCenterX() + circle.getTranslateX() + circle.getRadius();
+            originalY = circle.getCenterY() + circle.getTranslateY();
+        }
+        else if(Controller.moveSelected)
+        {
+            orgSceneX = e.getSceneX();
+            orgSceneY = e.getSceneY();
+            orgTranslateX = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateX();
+            orgTranslateY = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateY();
+
+            centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
+            centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
+        }
 
     }
 
-    double centerX = 0;
-    double centerY = 0;
-
     @Override
     public void moveDrag(MouseEvent e) {
-        circle.getOnMouseDragged();
+        if(Controller.resizeSelected)
+        {
+            deltaX = e.getSceneX() - originalX;
+            circle.setRadius(circle.getRadius() + deltaX/2);
+
+            originalX = circle.getCenterX() + circle.getTranslateX() + circle.getRadius();
+            originalY = circle.getCenterY() + circle.getTranslateY();
+
+        }
+        else if(Controller.moveSelected)
+        {
+            double offsetX = e.getSceneX() - orgSceneX;
+            double offsetY = e.getSceneY() - orgSceneY;
+            double newTranslateX = orgTranslateX + offsetX;
+            double newTranslateY = orgTranslateY + offsetY;
+
+            ((javafx.scene.shape.Circle) (e.getSource())).setTranslateX(newTranslateX);
+            ((javafx.scene.shape.Circle) (e.getSource())).setTranslateY(newTranslateY);
+
+            centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
+            centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
+        }
     }
 
     @Override
     public void moveRelease() {
+        int index = searchForCircle();
+
+        if(Controller.resizeSelected){
+
+            ((Circle) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
+
+            Controller.shapesList.get(index).setEndPoint(new Point2D(circle.getCenterX() +
+                    circle.getTranslateX() + circle.getRadius(),
+                    circle.getCenterY() + circle.getTranslateY()));
+
+            Controller.shapesList.get(index).setStartPoint(new Point2D(circle.getCenterX() +
+                    circle.getTranslateX() - circle.getRadius(), circle.getCenterY() +
+                    circle.getTranslateY()));
+
+        }
+        else if(Controller.moveSelected)
+        {
+            ((Circle) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
+            Controller.shapesList.get(index).setStartPoint(new Point2D(centerX - circle.getRadius(), centerY));
+            Controller.shapesList.get(index).setEndPoint(new Point2D(centerX + circle.getRadius(), centerY));
+        }
 
     }
 
     @Override
     public void removeShape(MouseEvent e) {
-
-
         int index = searchForCircle();
         System.out.println("index is " + index);
 
@@ -170,20 +223,28 @@ public class Circle extends AbstractShape {
             Controller.shapesList.remove(index);
 
         }
-
     }
 
     private EventHandler<MouseEvent> circleOnMouseClickedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-
                     circle = (javafx.scene.shape.Circle) (e.getTarget());
 
                     centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
                     centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
+
                     if(Controller.deleteSelected) {
                         removeShape(e);
+                    }else if (Controller.copySelected) {
+                        Circle c = new Circle();
+                        c.setStartPoint(new Point2D(getStartPoint().getX()+10, getStartPoint().getY()+10));
+                        c.setEndPoint(new Point2D(getEndPoint().getX()+10, getEndPoint().getY()+10));
+                        c.setStrokeWidth(circle.getStrokeWidth());
+                        c.setColor(getColor());
+                        c.setFillColor(getFillColor());
+                        c.draw(p);
+                        Controller.shapesList.add(c);
                     }
 
                 }
@@ -194,24 +255,7 @@ public class Circle extends AbstractShape {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-
-                    if(Controller.resizeSelected)
-                    {
-                        originalX = circle.getCenterX() + circle.getRadius();
-                        originalY = circle.getCenterY();
-                    }
-                    else
-                    {
-                        orgSceneX = e.getSceneX();
-                        orgSceneY = e.getSceneY();
-                        orgTranslateX = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateX();
-                        orgTranslateY = ((javafx.scene.shape.Circle) (e.getSource())).getTranslateY();
-
-                        centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
-                        centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
-                    }
-
-
+                    movePress(e);
                 }
             };
 
@@ -220,52 +264,13 @@ public class Circle extends AbstractShape {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-
-                    if(Controller.resizeSelected)
-                    {
-                        deltaX = e.getSceneX() - originalX;
-                        circle.setRadius(circle.getRadius() + deltaX/2);
-
-                        originalX = circle.getCenterX() + circle.getRadius();
-                        originalY = circle.getCenterY();
-
-                    }
-                    else
-                    {
-                        double offsetX = e.getSceneX() - orgSceneX;
-                        double offsetY = e.getSceneY() - orgSceneY;
-                        double newTranslateX = orgTranslateX + offsetX;
-                        double newTranslateY = orgTranslateY + offsetY;
-
-                        ((javafx.scene.shape.Circle) (e.getSource())).setTranslateX(newTranslateX);
-                        ((javafx.scene.shape.Circle) (e.getSource())).setTranslateY(newTranslateY);
-
-                        centerX = (circle.getBoundsInParent().getMaxX() + circle.getBoundsInParent().getMinX()) / 2;
-                        centerY = (circle.getBoundsInParent().getMaxY() + circle.getBoundsInParent().getMinY()) / 2;
-                    }
-
+                    moveDrag(e);
                 }
             };
 
     private EventHandler<MouseEvent> circleOnMouseReleasedEventHandler =
             e -> {
-
-                int index = searchForCircle();
-
-                if(Controller.resizeSelected){
-                    ((Circle) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
-                    ((Circle) Controller.shapesList.get(index)).setEndPoint(new Point2D(circle.getCenterX()
-                            + circle.getRadius(), circle.getCenterY()));
-                    ((Circle) Controller.shapesList.get(index)).setStartPoint(new Point2D(circle.getCenterX() -
-                            circle.getRadius(), circle.getCenterY()));
-                }
-                else
-                {
-                    ((Circle) Controller.shapesList.get(index)).setCenterPoint(new Point2D(centerX, centerY));
-                    ((Circle) Controller.shapesList.get(index)).setStartPoint(new Point2D(centerX - circle.getRadius(), centerY));
-                    ((Circle) Controller.shapesList.get(index)).setEndPoint(new Point2D(centerX + circle.getRadius(), centerY));
-                }
-
+                moveRelease();
             };
 
 

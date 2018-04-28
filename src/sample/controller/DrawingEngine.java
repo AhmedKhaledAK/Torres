@@ -14,6 +14,6 @@ public interface DrawingEngine {
     ArrayList<Shape> getShapes();
     void undo();
     void redo();
-    void save(String path);
-    void load(String path);
+    void save();
+    void load();
 }

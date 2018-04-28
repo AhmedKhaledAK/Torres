@@ -19,6 +19,10 @@ public class Line extends AbstractShape {
     private javafx.scene.shape.Line line;
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
+    private double startX = 0;
+    private double endX = 0;
+    private double startY = 0;
+    private double endY = 0;
     Pane p;
 
     public Line() {
@@ -141,12 +145,6 @@ public class Line extends AbstractShape {
 
     }
 
-    private double startX = 0;
-    private double endX = 0;
-    private double startY = 0;
-    private double endY = 0;
-
-
     private EventHandler<MouseEvent> lineOnMouseClickedEventHandler =
             new EventHandler<MouseEvent>() {
                 @Override
@@ -154,14 +152,22 @@ public class Line extends AbstractShape {
 
                     line = (javafx.scene.shape.Line) (e.getSource());
 
-                    startX = line.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
-                    startY = line.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
-
-                    endX = line.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
-                    endY = line.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
+                    startX = line.getStartX() + line.getTranslateX();
+                    startY = line.getStartY() + line.getTranslateY();
+                    endX = line.getEndX() + line.getTranslateX();
+                    endY = line.getEndY() + line.getTranslateY();
 
                     if(Controller.deleteSelected) {
                         removeShape(e);
+                    } else if(Controller.copySelected){
+                        Line l = new Line();
+                        l.setStartPoint(new Point2D(getStartPoint().getX()+10, getStartPoint().getY()+10));
+                        l.setEndPoint(new Point2D(getEndPoint().getX()+10, getEndPoint().getY()+10));
+                        l.setStrokeWidth(line.getStrokeWidth());
+                        l.setColor(getColor());
+                        l.setFillColor(getFillColor());
+                        l.draw(p);
+                        Controller.shapesList.add(l);
                     }
 
                 }
@@ -172,13 +178,22 @@ public class Line extends AbstractShape {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    orgSceneX = e.getSceneX();
-                    orgSceneY = e.getSceneY();
-                    orgTranslateX = ((javafx.scene.shape.Line) (e.getSource())).getTranslateX();
-                    orgTranslateY = ((javafx.scene.shape.Line) (e.getSource())).getTranslateY();
-                    startPoint = new Point2D(line.getBoundsInParent().getMinX(), line.getBoundsInParent().getMaxX());
-                    endPoint = new Point2D(line.getBoundsInParent().getMaxX(),
-                            line.getBoundsInParent().getMinY());
+
+                    if(Controller.resizeSelected)
+                    {
+                        startX = line.getStartX() + line.getTranslateX();
+                        startY = line.getStartY() + line.getTranslateY();
+                    }
+                    else if(Controller.moveSelected)
+                    {
+                        orgSceneX = e.getSceneX();
+                        orgSceneY = e.getSceneY();
+                        orgTranslateX = ((javafx.scene.shape.Line) (e.getSource())).getTranslateX();
+                        orgTranslateY = ((javafx.scene.shape.Line) (e.getSource())).getTranslateY();
+                        startPoint = new Point2D(line.getBoundsInParent().getMinX(), line.getBoundsInParent().getMaxX());
+                        endPoint = new Point2D(line.getBoundsInParent().getMaxX(),
+                                line.getBoundsInParent().getMinY());
+                    }
 
                 }
             };
@@ -187,17 +202,27 @@ public class Line extends AbstractShape {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    double offsetX = e.getSceneX() - orgSceneX;
-                    double offsetY = e.getSceneY() - orgSceneY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
-                    ((javafx.scene.shape.Line) (e.getSource())).setTranslateX(newTranslateX);
-                    ((javafx.scene.shape.Line) (e.getSource())).setTranslateY(newTranslateY);
-                    startX = line.getBoundsInParent().getMaxX() + getStrokeWidth() / 2;
-                    startY = line.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
 
-                    endX = line.getBoundsInParent().getMinX() - getStrokeWidth() / 2;
-                    endY = line.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
+                    if(Controller.resizeSelected)
+                    {
+                        line.setEndX(e.getSceneX());
+                        line.setEndY(e.getSceneY());
+                    }
+                    else if(Controller.moveSelected)
+                    {
+                        double offsetX = e.getSceneX() - orgSceneX;
+                        double offsetY = e.getSceneY() - orgSceneY;
+                        double newTranslateX = orgTranslateX + offsetX;
+                        double newTranslateY = orgTranslateY + offsetY;
+                        ((javafx.scene.shape.Line) (e.getSource())).setTranslateX(newTranslateX);
+                        ((javafx.scene.shape.Line) (e.getSource())).setTranslateY(newTranslateY);
+                        startX = line.getBoundsInParent().getMaxX();
+                        startY = line.getBoundsInParent().getMaxY();
+
+                        endX = line.getBoundsInParent().getMinX();
+                        endY = line.getBoundsInParent().getMinY();
+                    }
+
                 }
             };
 
@@ -207,9 +232,24 @@ public class Line extends AbstractShape {
 
                 int index = searchForLine();
 
-                ((Line) Controller.shapesList.get(index)).setStartPoint(new Point2D(startX, startY));
-                ((Line) Controller.shapesList.get(index)).setEndPoint(new Point2D(endX, endY));
+                if(Controller.resizeSelected)
+                {
+                    endX = e.getSceneX();
+                    endY = e.getSceneY();
 
+                    line.setEndX(endX);
+                    line.setEndY(endY);
+
+                    Controller.shapesList.get(index).setStartPoint(new Point2D(startX, startY));
+                    ((Line) Controller.shapesList.get(index)).setEndPoint(new Point2D(endX, endY));
+
+                }
+                else if(Controller.moveSelected)
+                {
+                    ((Line) Controller.shapesList.get(index)).setStartPoint(new Point2D(startX, startY));
+                    ((Line) Controller.shapesList.get(index)).setEndPoint(new Point2D(endX, endY));
+
+                }
 
             };
 

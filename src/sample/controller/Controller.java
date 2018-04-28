@@ -4,7 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -12,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import sample.Main;
-import sample.model.command.RemoveShapeCommand;
 import sample.files.FileClass;
 import sample.lang.Lang;
 import sample.model.Shape;
@@ -20,16 +21,16 @@ import sample.model.ShapeFactory;
 import sample.model.command.Command;
 import sample.model.command.CommandControl;
 import sample.model.command.DrawShapeCommand;
+import sample.model.command.RemoveShapeCommand;
 
-import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Controller implements DrawingEngine {
 
     @FXML
-    public Button btnBrush, btnEraser, btnEllipse, btnTriangle, btnLine,
-            btnRect, btnCircle, btnSquare, btnSave, btnLoad, btnMove, btnUndo, btnRedo, btnResize, btnDelete;
+    public Button btnBrush, btnEraser, btnEllipse, btnTriangle, btnLine, btnRect, btnCircle,
+            btnSquare, btnSave, btnLoad, btnMove, btnUndo, btnRedo, btnResize, btnDelete, btnRefresh;
 
     @FXML
     public Label lblCoordinates;
@@ -38,15 +39,10 @@ public class Controller implements DrawingEngine {
     private ColorPicker colorPicker, backgroundColorPicker, fillColorPicker;
 
     @FXML
-    private Slider sliderSize;
+    private Slider sliderSize, sliderTransparency;
 
     @FXML
     Pane pane, buttonPane;
-
-
-    public Pane getPane() {
-        return pane;
-    }
 
     private boolean brushSelected = false;
     private boolean eraserSelected = false;
@@ -60,11 +56,11 @@ public class Controller implements DrawingEngine {
     public static boolean resizeSelected = false;
     public static boolean moveSelected = false;
     public static boolean undoSelected = false;
+    public static boolean copySelected = false;
 
     private MouseEvent currentMouseEvent;
-
-
     public static ArrayList<Shape> shapesList = new ArrayList<>();
+    DecimalFormat df = new DecimalFormat("#.##");
 
     Circle brushStroke = null;
     Shape shape = null;
@@ -90,6 +86,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
     }
 
     public void onBtnLineClick(ActionEvent actionEvent) {
@@ -105,6 +102,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -123,6 +121,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -141,6 +140,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -159,6 +159,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -177,6 +178,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -196,9 +198,9 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
-        FileClass fileClass = new FileClass();
-        fileClass.save(shapesList);
+        save();
     }
 
     public void onBtnLoadClick(ActionEvent actionEvent) {
@@ -214,12 +216,9 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
-        FileClass fileClass = new FileClass();
-        shapesList = fileClass.load();
-        pane.getChildren().clear();
-        pane.getChildren().add(buttonPane);
-        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
+        load();
     }
 
     public void onBtnDeleteClick(ActionEvent actionEvent) {
@@ -235,6 +234,7 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         command = new RemoveShapeCommand(shape, this);
     }
@@ -252,6 +252,7 @@ public class Controller implements DrawingEngine {
         deleteSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
 
         if (toolSelected())
             Main.scene.setCursor(Cursor.CROSSHAIR);
@@ -270,6 +271,8 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
+
     }
 
     public void onBtnTriangleClick(ActionEvent actionEvent) {
@@ -285,6 +288,8 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         moveSelected = false;
         undoSelected = false;
+        copySelected = false;
+
     }
 
     public void onBtnMoveClick(ActionEvent actionEvent) {
@@ -300,6 +305,8 @@ public class Controller implements DrawingEngine {
         resizeSelected = false;
         deleteSelected = false;
         undoSelected = false;
+        copySelected = false;
+
     }
 
     public void onBtnUndoClick(ActionEvent event) {
@@ -315,9 +322,9 @@ public class Controller implements DrawingEngine {
         ellipseSelected = false;
         resizeSelected = false;
         moveSelected = false;
+        copySelected = false;
 
-        CommandControl commandControl = new CommandControl(command);
-        commandControl.pressUndo();
+        undo();
     }
 
     public void onBtnRedoClick(ActionEvent mouseEvent) {
@@ -332,9 +339,42 @@ public class Controller implements DrawingEngine {
         ellipseSelected = false;
         resizeSelected = false;
         moveSelected = false;
+        copySelected = false;
 
-        CommandControl commandControl = new CommandControl(command);
-        commandControl.pressRedo();
+        redo();
+    }
+
+    public void onBtnRefreshClick(ActionEvent actionEvent)
+    {
+        deleteSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
+        lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
+        resizeSelected = false;
+        moveSelected = false;
+        copySelected = false;
+
+        refresh(pane);
+    }
+
+    public void onBtnCopyClick(ActionEvent actionEvent) {
+        copySelected ^= true;
+        deleteSelected = false;
+        brushSelected = false;
+        eraserSelected = false;
+        lineSelected = false;
+        rectangleSelected = false;
+        squareSelected = false;
+        triangleSelected = false;
+        circleSelected = false;
+        ellipseSelected = false;
+        resizeSelected = false;
+        moveSelected = false;
     }
 
     /*End of Button Clicks*/
@@ -345,9 +385,10 @@ public class Controller implements DrawingEngine {
     public void onMouseClicked(MouseEvent mouseEvent) {
         setCurrentMouseEvent(mouseEvent);
 
-        if (deleteSelected) {
-            command.execute();
-        }
+//        if (deleteSelected) {
+////            command.execute();
+//            shape.removeShape(mouseEvent);
+//        }
     }
 
     public void onMousePressed(MouseEvent mouseEvent) {
@@ -373,29 +414,37 @@ public class Controller implements DrawingEngine {
         } else if (triangleSelected) {
             shape = shapeFactory.createShape("triangle");
             command = new DrawShapeCommand(shape, this);
+        } else if(brushSelected) {
+            drawBrushStroke(x, y);
+        } else if(eraserSelected) {
+            drawBrushStroke(x, y);
         }
     }
 
     public void onMouseDragged(MouseEvent mouseEvent) {
         setCurrentMouseEvent(mouseEvent);
 
+        pane.getChildren().remove(buttonPane);
+        pane.getChildren().add(buttonPane);
+
         double x1 = mouseEvent.getSceneX();
         double y1 = mouseEvent.getSceneY();
+
+        lblCoordinates.setText("X: " + df.format(x1) + ", Y: " + df.format(y1));
+
         if (toolSelected()) {
             shape.removeDeprecated(pane);
             drawShape(shape, x, y, x1, y1);
-            if (brushSelected) {
-                drawBrushStroke(x1, y1);
-            }
-            else if (eraserSelected) {
-                drawBrushStroke(x1, y1);
-            }
+        } else if (brushSelected) {
+            drawBrushStroke(x1, y1);
+        }
+        else if (eraserSelected) {
+            drawBrushStroke(x1, y1);
         }
     }
 
     public void onMouseReleased(MouseEvent mouseEvent) {
         setCurrentMouseEvent(mouseEvent);
-
         double x1 = mouseEvent.getSceneX();
         double y1 = mouseEvent.getSceneY();
 
@@ -405,20 +454,34 @@ public class Controller implements DrawingEngine {
             shape.removeDeprecated(pane);
             drawShape(shape, x, y, x1, y1);
             addShape(shape);
-            if (brushSelected) {
-                drawBrushStroke(x1, y1);
-            }
-            else if (eraserSelected) {
-                drawBrushStroke(x1, y1);
-            }
+        } else if (brushSelected) {
+            drawBrushStroke(x1, y1);
+        }
+        else if (eraserSelected) {
+            drawBrushStroke(x1, y1);
         }
     }
 
     public void onMouseMoved(MouseEvent mouseEvent) {
-        DecimalFormat df = new DecimalFormat("#.##");
         lblCoordinates.setText("X: " + df.format(mouseEvent.getSceneX()) + ", Y: " + df.format(mouseEvent.getSceneY()));
         Color c = backgroundColorPicker.getValue();
         pane.setStyle("-fx-background-color: " + toRGBCode(c));
+        pane.getChildren().remove(buttonPane);
+        pane.getChildren().add(buttonPane);
+
+        if(moveSelected)
+            Main.scene.setCursor(Cursor.MOVE);
+        else if(resizeSelected)
+            Main.scene.setCursor(Cursor.SE_RESIZE);
+        else if(deleteSelected)
+        {
+            Image image = new Image("xCursor.png");
+            Main.scene.setCursor(new ImageCursor(image));
+        }
+        else if(toolSelected())
+            Main.scene.setCursor(Cursor.CROSSHAIR);
+        else
+            Main.scene.setCursor(Cursor.DEFAULT);
     }
 
     public void onKeyPressed(KeyEvent e) {
@@ -471,7 +534,7 @@ public class Controller implements DrawingEngine {
         if (brushSelected)
             this.brushStroke.setFill(colorPicker.getValue());
         else if (eraserSelected)
-            this.brushStroke.setFill(Color.WHITE);
+            this.brushStroke.setFill(backgroundColorPicker.getValue());
 
         this.brushStroke.setRadius(sliderSize.getValue() / 2);
         this.brushStroke.setCenterX(currentX);
@@ -482,7 +545,8 @@ public class Controller implements DrawingEngine {
     private void drawShape(Shape shape, double startX, double startY, double endX, double endY) {
         shape.setStartPoint(new Point2D(startX, startY));
         shape.setEndPoint(new Point2D(endX, endY));
-        shape.setFillColor(Color.TRANSPARENT);
+
+        shape.setFillColor(Color.web(fillColorPicker.getValue().toString(),sliderTransparency.getValue()*0.01));
         shape.setColor(colorPicker.getValue());
         shape.setStrokeWidth(sliderSize.getValue());
         shape.draw(pane);
@@ -498,6 +562,10 @@ public class Controller implements DrawingEngine {
 
     public void setCurrentMouseEvent(MouseEvent currentMouseEvent) {
         this.currentMouseEvent = currentMouseEvent;
+    }
+
+    public Pane getPane() {
+        return pane;
     }
 
     private static String toRGBCode(Color color)
@@ -530,6 +598,7 @@ public class Controller implements DrawingEngine {
         btnSave.setCursor(Cursor.HAND);
         btnUndo.setCursor(Cursor.HAND);
         btnRedo.setCursor(Cursor.HAND);
+        btnRefresh.setCursor(Cursor.HAND);
 
         backgroundColorPicker.setCursor(Cursor.HAND);
         colorPicker.setCursor(Cursor.HAND);
@@ -537,12 +606,17 @@ public class Controller implements DrawingEngine {
 
         Color c = backgroundColorPicker.getValue();
         pane.setStyle("-fx-background-color: " + toRGBCode(c));
-        buttonPane.setStyle("-fx-background-color: #26C6DA");
+        buttonPane.setStyle("-fx-background-color: #b7265d");
+
+                // #26C6DA
     }
 
     @Override
     public void refresh(Object pane) {
-
+        Pane p = (Pane) pane;
+        p.getChildren().clear();
+        p.getChildren().add(buttonPane);
+        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 
     @Override
@@ -567,21 +641,28 @@ public class Controller implements DrawingEngine {
 
     @Override
     public void undo() {
-
+        CommandControl commandControl = new CommandControl(command);
+        commandControl.pressUndo();
     }
 
     @Override
     public void redo() {
-
+        CommandControl commandControl = new CommandControl(command);
+        commandControl.pressRedo();
     }
 
     @Override
-    public void save(String path) {
-
+    public void save() {
+        FileClass fileClass = new FileClass();
+        fileClass.save(getShapes());
     }
 
     @Override
-    public void load(String path) {
-
+    public void load() {
+        FileClass fileClass = new FileClass();
+        shapesList = fileClass.load();
+        pane.getChildren().clear();
+        pane.getChildren().add(buttonPane);
+        for (Shape aShapesList : shapesList) aShapesList.draw(pane);
     }
 }

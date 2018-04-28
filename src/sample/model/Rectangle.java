@@ -2,16 +2,13 @@ package sample.model;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
 import sample.controller.Controller;
 import sample.lang.Lang;
 
-import javax.naming.ldap.Control;
 import java.util.Map;
 
 public class Rectangle extends AbstractShape {
@@ -138,7 +135,7 @@ public class Rectangle extends AbstractShape {
         rectangle.setOnMouseDragged(rectangleOnMouseDraggedEventHandler);
         rectangle.setOnMouseReleased(rectangleOnMouseReleasedEventHandler);
         rectangle.setOnMouseClicked(rectangleOnMouseClickedEventHandler);
-//        rectangle.setOnMouseMoved(rectangleOnMouseMovedEventHandler);
+
         p.getChildren().add(rectangle);
 
     }
@@ -147,22 +144,24 @@ public class Rectangle extends AbstractShape {
     public void movePress(MouseEvent e) {
         if(Controller.resizeSelected)
         {
-            originalX = rectangle.getX() + rectangle.getWidth();
-            originalY = rectangle.getY() + rectangle.getHeight();
+            originalX = rectangle.getX() + rectangle.getTranslateX() + rectangle.getWidth();
+            originalY = rectangle.getY() + rectangle.getTranslateY() + rectangle.getHeight();
         }
-        else {
-
+        else if(Controller.moveSelected) {
             orgSceneX = e.getSceneX();
             orgSceneY = e.getSceneY();
+
             orgTranslateX = ((javafx.scene.shape.Rectangle) (e.getTarget())).getTranslateX();
             orgTranslateY = ((javafx.scene.shape.Rectangle) (e.getTarget())).getTranslateY();
+
+            startPoint = new Point2D(rectangle.getBoundsInParent().getMinX(),
+                    rectangle.getBoundsInParent().getMinY());
+
+            endPoint = new Point2D(rectangle.getBoundsInParent().getMaxX(),
+                    rectangle.getBoundsInParent().getMaxY());
+
         }
 
-        startPoint = new Point2D(rectangle.getBoundsInParent().getMinX(),
-                rectangle.getBoundsInParent().getMaxY());
-
-        endPoint = new Point2D(rectangle.getBoundsInParent().getMaxX(),
-                rectangle.getBoundsInParent().getMinY());
     }
 
     @Override
@@ -175,12 +174,10 @@ public class Rectangle extends AbstractShape {
             rectangle.setHeight(rectangle.getHeight() + deltaY);
             rectangle.setWidth(rectangle.getWidth() + deltaX);
 
-            originalX = rectangle.getX() + rectangle.getWidth();
-            originalY = rectangle.getY() + rectangle.getHeight();
-
-
+            originalX = rectangle.getX() + rectangle.getTranslateX() + rectangle.getWidth();
+            originalY = rectangle.getY() + + rectangle.getTranslateY() + rectangle.getHeight();
         }
-        else
+        else if(Controller.moveSelected)
         {
             double offsetX = e.getSceneX() - orgSceneX;
             double offsetY = e.getSceneY() - orgSceneY;
@@ -191,12 +188,11 @@ public class Rectangle extends AbstractShape {
             ((javafx.scene.shape.Rectangle) (e.getTarget())).setTranslateY(newTranslateY);
 
             startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
-            startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
+            startY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
 
+            endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
+            endY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
         }
-
-        endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
-        endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
     }
 
     @Override
@@ -204,9 +200,10 @@ public class Rectangle extends AbstractShape {
         int index = searchForRectangle();
         if(Controller.resizeSelected){
             Controller.shapesList.get(index).setEndPoint(new Point2D(originalX, originalY));
-            Controller.shapesList.get(index).setStartPoint(new Point2D(rectangle.getX(), rectangle.getY()));
+            Controller.shapesList.get(index).setStartPoint(new Point2D(rectangle.getX() + rectangle.getTranslateX(),
+                    rectangle.getY() + rectangle.getTranslateY()));
         }
-        else {
+        else if(Controller.moveSelected){
             Controller.shapesList.get(index).setStartPoint(new Point2D(startX, startY));
             Controller.shapesList.get(index).setEndPoint(new Point2D(endX, endY));
         }
@@ -229,44 +226,27 @@ public class Rectangle extends AbstractShape {
         }
     }
 
-//    private EventHandler<MouseEvent> rectangleOnMouseMovedEventHandler =
-//            new EventHandler<MouseEvent>() {
-//                @Override
-//                public void handle(MouseEvent e) {
-//                    if(e.getSceneX()>=rectangle.getX() && e.getSceneX()<=rectangle.getX()+rectangle.getStrokeWidth())
-//                        Main.scene.setCursor(Cursor.W_RESIZE);
-//
-//                    else if(e.getSceneX()<=rectangle.getX()+rectangle.getWidth() &&
-//                            e.getSceneX()>=rectangle.getX()+ rectangle.getWidth()-rectangle.getStrokeWidth())
-//                        Main.scene.setCursor(Cursor.E_RESIZE);
-//
-//                    else if(e.getSceneY()>=rectangle.getY() && e.getSceneY()<rectangle.getY()-rectangle.getStrokeWidth())
-//                        Main.scene.setCursor(Cursor.N_RESIZE);
-//
-//                    else if(e.getSceneY()<=rectangle.getY() - rectangle.getHeight() &&
-//                            e.getSceneY()>rectangle.getY() - rectangle.getHeight() +rectangle.getStrokeWidth())
-//                        Main.scene.setCursor(Cursor.S_RESIZE);
-//
-//                    else
-//                        Main.scene.setCursor(Cursor.DEFAULT);
-//
-//
-//                }
-//            };
-
-
     protected EventHandler<MouseEvent> rectangleOnMouseClickedEventHandler =
             e -> {
                 rectangle = (javafx.scene.shape.Rectangle) (e.getTarget());
 
                 startX = rectangle.getBoundsInParent().getMinX() + getStrokeWidth() / 2;
-                startY = rectangle.getBoundsInParent().getMaxY() - getStrokeWidth() / 2;
+                startY = rectangle.getBoundsInParent().getMinY() - getStrokeWidth() / 2;
 
                 endX = rectangle.getBoundsInParent().getMaxX() - getStrokeWidth() / 2;
-                endY = rectangle.getBoundsInParent().getMinY() + getStrokeWidth() / 2;
+                endY = rectangle.getBoundsInParent().getMaxY() + getStrokeWidth() / 2;
 
                 if(Controller.deleteSelected) {
                     removeShape(e);
+                }else if(Controller.copySelected){
+                    Rectangle r = new Rectangle();
+                    r.setStartPoint(new Point2D(getStartPoint().getX()+10, getStartPoint().getY()+10));
+                    r.setEndPoint(new Point2D(getEndPoint().getX()+10, getEndPoint().getY()+10));
+                    r.setStrokeWidth(rectangle.getStrokeWidth());
+                    r.setColor(getColor());
+                    r.setFillColor(getFillColor());
+                    r.draw(p);
+                    Controller.shapesList.add(r);
                 }
             };
 
